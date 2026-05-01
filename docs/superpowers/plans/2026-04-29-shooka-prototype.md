@@ -66,6 +66,7 @@ shooka-prototype/
 ## Task 0: 프로젝트 초기화
 
 **Files:**
+
 - Create: `package.json`, `next.config.mjs`, `tsconfig.json`, `tailwind.config.ts`
 - Create: `.env.example`, `.gitignore`
 - Create: `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/globals.css`
@@ -159,13 +160,13 @@ mkdir -p scripts
 
 ```json
 {
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "cache:build": "tsx scripts/build-cache.ts"
-  }
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "cache:build": "tsx scripts/build-cache.ts"
+    }
 }
 ```
 
@@ -190,6 +191,7 @@ git commit -m "feat: initialize Next.js project with dependencies"
 ## Task 1: 공통 타입 정의
 
 **Files:**
+
 - Create: `src/lib/types.ts`
 
 - [ ] **Step 1: `src/lib/types.ts` 작성**
@@ -198,67 +200,67 @@ git commit -m "feat: initialize Next.js project with dependencies"
 export type ChannelName = 'shookaworld' | 'moneycomics';
 
 export type SampleComment = {
-  text: string;
-  likeCount: number;
-  author: string;
+    text: string;
+    likeCount: number;
+    author: string;
 };
 
 export type FeedbackCategory = {
-  category: string;
-  weightedScore: number;
-  commentCount: number;
-  sampleComments: SampleComment[];
+    category: string;
+    weightedScore: number;
+    commentCount: number;
+    sampleComments: SampleComment[];
 };
 
 export type ExpressionCategory = {
-  type: string;
-  count: number;
+    type: string;
+    count: number;
 };
 
 export type ActionItem = {
-  title: string;
-  rationale: string;
-  sourceFeedback: string;
+    title: string;
+    rationale: string;
+    sourceFeedback: string;
 };
 
 export type AnalysisResult = {
-  videoId: string;
-  channelId: string;
-  channelName: ChannelName;
-  videoTitle: string;
-  videoUrl: string;
-  publishedAt: string;
-  thumbnailUrl: string;
-  analyzedAt: string;
-  commentCount: number;
-  feedbackDistribution: FeedbackCategory[];
-  expressionDistribution: ExpressionCategory[];
-  actionItems: ActionItem[];
+    videoId: string;
+    channelId: string;
+    channelName: ChannelName;
+    videoTitle: string;
+    videoUrl: string;
+    publishedAt: string;
+    thumbnailUrl: string;
+    analyzedAt: string;
+    commentCount: number;
+    feedbackDistribution: FeedbackCategory[];
+    expressionDistribution: ExpressionCategory[];
+    actionItems: ActionItem[];
 };
 
 export type UsageStatus = {
-  count: number;
-  limit: number;
-  resetAt: number;
+    count: number;
+    limit: number;
+    resetAt: number;
 };
 
 export type CaseMeta = {
-  videoId: string;
-  channelName: ChannelName;
-  videoTitle: string;
-  thumbnailUrl: string;
-  publishedAt: string;
+    videoId: string;
+    channelName: ChannelName;
+    videoTitle: string;
+    thumbnailUrl: string;
+    publishedAt: string;
 };
 
 export type PipelineEvent =
-  | { stage: 'collecting'; message: string }
-  | { stage: 'filtering'; message: string }
-  | { stage: 'classifying-feedback'; message: string }
-  | { stage: 'classifying-expression'; message: string }
-  | { stage: 'aggregating'; message: string }
-  | { stage: 'generating-actions'; message: string }
-  | { stage: 'done'; result: AnalysisResult }
-  | { stage: 'error'; message: string };
+    | { stage: 'collecting'; message: string }
+    | { stage: 'filtering'; message: string }
+    | { stage: 'classifying-feedback'; message: string }
+    | { stage: 'classifying-expression'; message: string }
+    | { stage: 'aggregating'; message: string }
+    | { stage: 'generating-actions'; message: string }
+    | { stage: 'done'; result: AnalysisResult }
+    | { stage: 'error'; message: string };
 ```
 
 - [ ] **Step 2: 커밋**
@@ -273,6 +275,7 @@ git commit -m "feat: add shared types"
 ## Task 2: YouTube API 래퍼
 
 **Files:**
+
 - Create: `src/lib/youtube.ts`
 
 - [ ] **Step 1: `src/lib/youtube.ts` 작성**
@@ -283,104 +286,104 @@ YouTube Data API v3의 `commentThreads.list`는 `order=relevance` (기본값)로
 import { google } from 'googleapis';
 
 const youtube = google.youtube({
-  version: 'v3',
-  auth: process.env.YOUTUBE_API_KEY,
+    version: 'v3',
+    auth: process.env.YOUTUBE_API_KEY,
 });
 
 export type RawComment = {
-  text: string;
-  likeCount: number;
-  author: string;
-  publishedAt: string;
+    text: string;
+    likeCount: number;
+    author: string;
+    publishedAt: string;
 };
 
 export type VideoMeta = {
-  videoId: string;
-  channelId: string;
-  title: string;
-  publishedAt: string;
-  thumbnailUrl: string;
+    videoId: string;
+    channelId: string;
+    title: string;
+    publishedAt: string;
+    thumbnailUrl: string;
 };
 
 export function extractVideoId(url: string): string | null {
-  const patterns = [
-    /[?&]v=([^&]+)/,
-    /youtu\.be\/([^?]+)/,
-    /youtube\.com\/embed\/([^?]+)/,
-  ];
-  for (const pattern of patterns) {
-    const match = url.match(pattern);
-    if (match) return match[1];
-  }
-  return null;
+    const patterns = [
+        /[?&]v=([^&]+)/,
+        /youtu\.be\/([^?]+)/,
+        /youtube\.com\/embed\/([^?]+)/,
+    ];
+    for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match) return match[1];
+    }
+    return null;
 }
 
 export async function getVideoMeta(videoId: string): Promise<VideoMeta> {
-  const res = await youtube.videos.list({
-    part: ['snippet'],
-    id: [videoId],
-  });
+    const res = await youtube.videos.list({
+        part: ['snippet'],
+        id: [videoId],
+    });
 
-  const item = res.data.items?.[0];
-  if (!item) throw new Error(`Video not found: ${videoId}`);
+    const item = res.data.items?.[0];
+    if (!item) throw new Error(`Video not found: ${videoId}`);
 
-  const snippet = item.snippet!;
-  if (snippet.liveBroadcastContent === 'live') {
-    throw new Error('라이브 방송 중인 영상은 분석할 수 없습니다.');
-  }
+    const snippet = item.snippet!;
+    if (snippet.liveBroadcastContent === 'live') {
+        throw new Error('라이브 방송 중인 영상은 분석할 수 없습니다.');
+    }
 
-  return {
-    videoId,
-    channelId: snippet.channelId!,
-    title: snippet.title!,
-    publishedAt: snippet.publishedAt!,
-    thumbnailUrl:
-      snippet.thumbnails?.high?.url ||
-      snippet.thumbnails?.default?.url ||
-      '',
-  };
+    return {
+        videoId,
+        channelId: snippet.channelId!,
+        title: snippet.title!,
+        publishedAt: snippet.publishedAt!,
+        thumbnailUrl:
+            snippet.thumbnails?.high?.url ||
+            snippet.thumbnails?.default?.url ||
+            '',
+    };
 }
 
 export async function fetchComments(videoId: string): Promise<RawComment[]> {
-  const allComments: RawComment[] = [];
-  let pageToken: string | undefined;
+    const allComments: RawComment[] = [];
+    let pageToken: string | undefined;
 
-  // 최대 2페이지(200개)까지 수집 후 정렬·샘플링
-  for (let page = 0; page < 2; page++) {
-    const res = await youtube.commentThreads.list({
-      part: ['snippet'],
-      videoId,
-      maxResults: 100,
-      order: 'relevance',
-      pageToken,
-    });
+    // 최대 2페이지(200개)까지 수집 후 정렬·샘플링
+    for (let page = 0; page < 2; page++) {
+        const res = await youtube.commentThreads.list({
+            part: ['snippet'],
+            videoId,
+            maxResults: 100,
+            order: 'relevance',
+            pageToken,
+        });
 
-    const items = res.data.items || [];
-    for (const item of items) {
-      const top = item.snippet?.topLevelComment?.snippet;
-      if (!top) continue;
-      allComments.push({
-        text: top.textDisplay || '',
-        likeCount: top.likeCount || 0,
-        author: top.authorDisplayName || '',
-        publishedAt: top.publishedAt || '',
-      });
+        const items = res.data.items || [];
+        for (const item of items) {
+            const top = item.snippet?.topLevelComment?.snippet;
+            if (!top) continue;
+            allComments.push({
+                text: top.textDisplay || '',
+                likeCount: top.likeCount || 0,
+                author: top.authorDisplayName || '',
+                publishedAt: top.publishedAt || '',
+            });
+        }
+
+        pageToken = res.data.nextPageToken || undefined;
+        if (!pageToken) break;
     }
 
-    pageToken = res.data.nextPageToken || undefined;
-    if (!pageToken) break;
-  }
+    // 좋아요 상위 50개
+    const sorted = [...allComments].sort((a, b) => b.likeCount - a.likeCount);
+    const top50 = sorted.slice(0, 50);
 
-  // 좋아요 상위 50개
-  const sorted = [...allComments].sort((a, b) => b.likeCount - a.likeCount);
-  const top50 = sorted.slice(0, 50);
+    // 무작위 50개 (상위 50과 중복 제거)
+    const top50Texts = new Set(top50.map((c) => c.text));
+    const rest = allComments.filter((c) => !top50Texts.has(c.text));
+    const shuffled = rest.sort(() => Math.random() - 0.5).slice(0, 50);
 
-  // 무작위 50개 (상위 50과 중복 제거)
-  const top50Texts = new Set(top50.map((c) => c.text));
-  const rest = allComments.filter((c) => !top50Texts.has(c.text));
-  const shuffled = rest.sort(() => Math.random() - 0.5).slice(0, 50);
-
-  return [...top50, ...shuffled];
+    return [...top50, ...shuffled];
 }
 ```
 
@@ -404,20 +407,20 @@ DB_PATH=./data/app.db
 import { google } from 'googleapis';
 
 const youtube = google.youtube({
-  version: 'v3',
-  auth: process.env.YOUTUBE_API_KEY,
+    version: 'v3',
+    auth: process.env.YOUTUBE_API_KEY,
 });
 
 async function findChannel(query: string) {
-  const res = await youtube.search.list({
-    part: ['snippet'],
-    q: query,
-    type: ['channel'],
-    maxResults: 3,
-  });
-  for (const item of res.data.items || []) {
-    console.log(item.snippet?.channelTitle, '->', item.id?.channelId);
-  }
+    const res = await youtube.search.list({
+        part: ['snippet'],
+        q: query,
+        type: ['channel'],
+        maxResults: 3,
+    });
+    for (const item of res.data.items || []) {
+        console.log(item.snippet?.channelTitle, '->', item.id?.channelId);
+    }
 }
 
 findChannel('슈카월드').then(() => findChannel('머니코믹스'));
@@ -441,6 +444,7 @@ git commit -m "feat: add YouTube API wrapper and channel ID helper"
 ## Task 3: Claude 래퍼 + 프롬프트
 
 **Files:**
+
 - Create: `src/lib/anthropic.ts`
 - Create: `src/prompts/classify-feedback.ts`
 - Create: `src/prompts/classify-expression.ts`
@@ -448,32 +452,33 @@ git commit -m "feat: add YouTube API wrapper and channel ID helper"
 
 - [ ] **Step 1: `src/lib/anthropic.ts` 작성**
 
-```typescript
+````typescript
 import Anthropic from '@anthropic-ai/sdk';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const model = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
 
 export async function callClaude(prompt: string): Promise<string> {
-  const msg = await client.messages.create({
-    model,
-    max_tokens: 4096,
-    temperature: 0.1,
-    messages: [{ role: 'user', content: prompt }],
-  });
-  const block = msg.content[0];
-  if (block.type !== 'text') throw new Error('Unexpected response type');
-  return block.text;
+    const msg = await client.messages.create({
+        model,
+        max_tokens: 4096,
+        temperature: 0.1,
+        messages: [{ role: 'user', content: prompt }],
+    });
+    const block = msg.content[0];
+    if (block.type !== 'text') throw new Error('Unexpected response type');
+    return block.text;
 }
 
 export async function callClaudeJSON<T>(prompt: string): Promise<T> {
-  const text = await callClaude(prompt);
-  const match = text.match(/```json\s*([\s\S]*?)```/) ||
-                text.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
-  if (!match) throw new Error('No JSON found in response');
-  return JSON.parse(match[1]) as T;
+    const text = await callClaude(prompt);
+    const match =
+        text.match(/```json\s*([\s\S]*?)```/) ||
+        text.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
+    if (!match) throw new Error('No JSON found in response');
+    return JSON.parse(match[1]) as T;
 }
-```
+````
 
 - [ ] **Step 2: `src/prompts/classify-feedback.ts` 작성**
 
@@ -481,28 +486,30 @@ export async function callClaudeJSON<T>(prompt: string): Promise<T> {
 import type { RawComment } from '@/lib/youtube';
 
 const FEEDBACK_CATEGORIES = [
-  '콘텐츠 길이',
-  '주제 깊이',
-  '주제 다양성',
-  '사실 정확성',
-  '출연자 구성',
-  '영상 구성',
-  '시의성',
-  '기타',
+    '콘텐츠 길이',
+    '주제 깊이',
+    '주제 다양성',
+    '사실 정확성',
+    '출연자 구성',
+    '영상 구성',
+    '시의성',
+    '기타',
 ];
 
 export type FeedbackClassification = {
-  index: number;
-  category: string;
+    index: number;
+    category: string;
 };
 
 export function buildFeedbackPrompt(comments: RawComment[]): string {
-  const categoriesStr = FEEDBACK_CATEGORIES.map((c, i) => `${i + 1}. ${c}`).join('\n');
-  const commentsStr = comments
-    .map((c, i) => `[${i}] (좋아요 ${c.likeCount}) ${c.text}`)
-    .join('\n');
+    const categoriesStr = FEEDBACK_CATEGORIES.map(
+        (c, i) => `${i + 1}. ${c}`,
+    ).join('\n');
+    const commentsStr = comments
+        .map((c, i) => `[${i}] (좋아요 ${c.likeCount}) ${c.text}`)
+        .join('\n');
 
-  return `당신은 YouTube 댓글 분류 전문가입니다. 아래 댓글들을 잠재 피드백 카테고리로 분류하세요.
+    return `당신은 YouTube 댓글 분류 전문가입니다. 아래 댓글들을 잠재 피드백 카테고리로 분류하세요.
 
 ## 카테고리
 ${categoriesStr}
@@ -526,20 +533,26 @@ ${commentsStr}
 ```typescript
 import type { RawComment } from '@/lib/youtube';
 
-const EXPRESSION_TYPES = ['칭찬형', '비판형', '질문형', '농담·밈형', '정보 보충형'];
+const EXPRESSION_TYPES = [
+    '칭찬형',
+    '비판형',
+    '질문형',
+    '농담·밈형',
+    '정보 보충형',
+];
 
 export type ExpressionClassification = {
-  index: number;
-  type: string;
+    index: number;
+    type: string;
 };
 
 export function buildExpressionPrompt(comments: RawComment[]): string {
-  const typesStr = EXPRESSION_TYPES.map((t, i) => `${i + 1}. ${t}`).join('\n');
-  const commentsStr = comments
-    .map((c, i) => `[${i}] ${c.text}`)
-    .join('\n');
+    const typesStr = EXPRESSION_TYPES.map((t, i) => `${i + 1}. ${t}`).join(
+        '\n',
+    );
+    const commentsStr = comments.map((c, i) => `[${i}] ${c.text}`).join('\n');
 
-  return `당신은 YouTube 댓글 분류 전문가입니다. 아래 댓글들을 표현 방식으로 분류하세요.
+    return `당신은 YouTube 댓글 분류 전문가입니다. 아래 댓글들을 표현 방식으로 분류하세요.
 
 ## 표현 방식 유형
 ${typesStr}
@@ -563,18 +576,21 @@ ${commentsStr}
 import type { FeedbackCategory } from '@/lib/types';
 
 export function buildActionsPrompt(
-  videoTitle: string,
-  feedbackDistribution: FeedbackCategory[]
+    videoTitle: string,
+    feedbackDistribution: FeedbackCategory[],
 ): string {
-  const feedbackStr = feedbackDistribution
-    .slice(0, 6)
-    .map(
-      (f) =>
-        `- ${f.category} (가중점수: ${f.weightedScore}, 댓글수: ${f.commentCount})\n  대표 댓글: ${f.sampleComments.slice(0, 2).map((c) => `"${c.text}"`).join(', ')}`
-    )
-    .join('\n');
+    const feedbackStr = feedbackDistribution
+        .slice(0, 6)
+        .map(
+            (f) =>
+                `- ${f.category} (가중점수: ${f.weightedScore}, 댓글수: ${f.commentCount})\n  대표 댓글: ${f.sampleComments
+                    .slice(0, 2)
+                    .map((c) => `"${c.text}"`)
+                    .join(', ')}`,
+        )
+        .join('\n');
 
-  return `당신은 YouTube 콘텐츠 전략가입니다. 댓글 분석 결과를 바탕으로 다음 영상 기획에 활용할 수 있는 구체적인 액션 아이템을 생성하세요.
+    return `당신은 YouTube 콘텐츠 전략가입니다. 댓글 분석 결과를 바탕으로 다음 영상 기획에 활용할 수 있는 구체적인 액션 아이템을 생성하세요.
 
 ## 영상 제목
 ${videoTitle}
@@ -612,6 +628,7 @@ git commit -m "feat: add Claude wrapper and classification prompts"
 ## Task 4: 분석 파이프라인
 
 **Files:**
+
 - Create: `src/lib/pipeline.ts`
 
 - [ ] **Step 1: `src/lib/pipeline.ts` 작성**
@@ -619,130 +636,179 @@ git commit -m "feat: add Claude wrapper and classification prompts"
 ```typescript
 import { getVideoMeta, fetchComments, type RawComment } from '@/lib/youtube';
 import { callClaudeJSON } from '@/lib/anthropic';
-import { buildFeedbackPrompt, type FeedbackClassification } from '@/prompts/classify-feedback';
-import { buildExpressionPrompt, type ExpressionClassification } from '@/prompts/classify-expression';
+import {
+    buildFeedbackPrompt,
+    type FeedbackClassification,
+} from '@/prompts/classify-feedback';
+import {
+    buildExpressionPrompt,
+    type ExpressionClassification,
+} from '@/prompts/classify-expression';
 import { buildActionsPrompt } from '@/prompts/generate-actions';
-import type { AnalysisResult, FeedbackCategory, ExpressionCategory, ActionItem, PipelineEvent } from '@/lib/types';
+import type {
+    AnalysisResult,
+    FeedbackCategory,
+    ExpressionCategory,
+    ActionItem,
+    PipelineEvent,
+} from '@/lib/types';
 
 function filterComments(comments: RawComment[]): RawComment[] {
-  return comments.filter((c) => {
-    const text = c.text.trim();
-    if (text.length < 5) return false;
-    // 순수 이모지/특수문자만인 댓글 제거
-    if (/^[\p{Emoji}\s]+$/u.test(text)) return false;
-    return true;
-  });
+    return comments.filter((c) => {
+        const text = c.text.trim();
+        if (text.length < 5) return false;
+        // 순수 이모지/특수문자만인 댓글 제거
+        if (/^[\p{Emoji}\s]+$/u.test(text)) return false;
+        return true;
+    });
 }
 
 function buildFeedbackDistribution(
-  comments: RawComment[],
-  classifications: FeedbackClassification[]
+    comments: RawComment[],
+    classifications: FeedbackClassification[],
 ): FeedbackCategory[] {
-  const map = new Map<string, { weightedScore: number; comments: RawComment[] }>();
+    const map = new Map<
+        string,
+        { weightedScore: number; comments: RawComment[] }
+    >();
 
-  for (const cls of classifications) {
-    const comment = comments[cls.index];
-    if (!comment) continue;
-    const existing = map.get(cls.category) || { weightedScore: 0, comments: [] };
-    existing.weightedScore += comment.likeCount + 1;
-    existing.comments.push(comment);
-    map.set(cls.category, existing);
-  }
+    for (const cls of classifications) {
+        const comment = comments[cls.index];
+        if (!comment) continue;
+        const existing = map.get(cls.category) || {
+            weightedScore: 0,
+            comments: [],
+        };
+        existing.weightedScore += comment.likeCount + 1;
+        existing.comments.push(comment);
+        map.set(cls.category, existing);
+    }
 
-  return Array.from(map.entries())
-    .map(([category, data]) => ({
-      category,
-      weightedScore: data.weightedScore,
-      commentCount: data.comments.length,
-      sampleComments: data.comments
-        .sort((a, b) => b.likeCount - a.likeCount)
-        .slice(0, 3)
-        .map((c) => ({ text: c.text, likeCount: c.likeCount, author: c.author })),
-    }))
-    .sort((a, b) => b.weightedScore - a.weightedScore);
+    return Array.from(map.entries())
+        .map(([category, data]) => ({
+            category,
+            weightedScore: data.weightedScore,
+            commentCount: data.comments.length,
+            sampleComments: data.comments
+                .sort((a, b) => b.likeCount - a.likeCount)
+                .slice(0, 3)
+                .map((c) => ({
+                    text: c.text,
+                    likeCount: c.likeCount,
+                    author: c.author,
+                })),
+        }))
+        .sort((a, b) => b.weightedScore - a.weightedScore);
 }
 
 function buildExpressionDistribution(
-  classifications: ExpressionClassification[]
+    classifications: ExpressionClassification[],
 ): ExpressionCategory[] {
-  const map = new Map<string, number>();
-  for (const cls of classifications) {
-    map.set(cls.type, (map.get(cls.type) || 0) + 1);
-  }
-  return Array.from(map.entries())
-    .map(([type, count]) => ({ type, count }))
-    .sort((a, b) => b.count - a.count);
+    const map = new Map<string, number>();
+    for (const cls of classifications) {
+        map.set(cls.type, (map.get(cls.type) || 0) + 1);
+    }
+    return Array.from(map.entries())
+        .map(([type, count]) => ({ type, count }))
+        .sort((a, b) => b.count - a.count);
 }
 
 export async function runPipeline(
-  videoUrl: string,
-  onEvent: (event: PipelineEvent) => void
+    videoUrl: string,
+    onEvent: (event: PipelineEvent) => void,
 ): Promise<AnalysisResult> {
-  // Stage 1: 수집
-  onEvent({ stage: 'collecting', message: '영상 메타데이터·댓글 수집 중...' });
-  const videoId = videoUrl.match(/[?&]v=([^&]+)/)?.at(1) ||
-                  videoUrl.match(/youtu\.be\/([^?]+)/)?.at(1);
-  if (!videoId) throw new Error('유효하지 않은 YouTube URL');
+    // Stage 1: 수집
+    onEvent({
+        stage: 'collecting',
+        message: '영상 메타데이터·댓글 수집 중...',
+    });
+    const videoId =
+        videoUrl.match(/[?&]v=([^&]+)/)?.at(1) ||
+        videoUrl.match(/youtu\.be\/([^?]+)/)?.at(1);
+    if (!videoId) throw new Error('유효하지 않은 YouTube URL');
 
-  const [meta, rawComments] = await Promise.all([
-    getVideoMeta(videoId),
-    fetchComments(videoId),
-  ]);
-  onEvent({ stage: 'collecting', message: `댓글 ${rawComments.length}개 수집 완료` });
+    const [meta, rawComments] = await Promise.all([
+        getVideoMeta(videoId),
+        fetchComments(videoId),
+    ]);
+    onEvent({
+        stage: 'collecting',
+        message: `댓글 ${rawComments.length}개 수집 완료`,
+    });
 
-  // Stage 2: 정제
-  onEvent({ stage: 'filtering', message: '댓글 정제 중...' });
-  const comments = filterComments(rawComments);
-  onEvent({ stage: 'filtering', message: `${comments.length}개 댓글 정제 완료` });
+    // Stage 2: 정제
+    onEvent({ stage: 'filtering', message: '댓글 정제 중...' });
+    const comments = filterComments(rawComments);
+    onEvent({
+        stage: 'filtering',
+        message: `${comments.length}개 댓글 정제 완료`,
+    });
 
-  // Stage 3: 잠재 피드백 분류
-  onEvent({ stage: 'classifying-feedback', message: '잠재 피드백 분류 중...' });
-  const feedbackClassifications = await callClaudeJSON<FeedbackClassification[]>(
-    buildFeedbackPrompt(comments)
-  );
-  onEvent({ stage: 'classifying-feedback', message: '잠재 피드백 분류 완료' });
+    // Stage 3: 잠재 피드백 분류
+    onEvent({
+        stage: 'classifying-feedback',
+        message: '잠재 피드백 분류 중...',
+    });
+    const feedbackClassifications = await callClaudeJSON<
+        FeedbackClassification[]
+    >(buildFeedbackPrompt(comments));
+    onEvent({
+        stage: 'classifying-feedback',
+        message: '잠재 피드백 분류 완료',
+    });
 
-  // Stage 4: 표현 방식 분류
-  onEvent({ stage: 'classifying-expression', message: '표현 방식 분류 중...' });
-  const expressionClassifications = await callClaudeJSON<ExpressionClassification[]>(
-    buildExpressionPrompt(comments)
-  );
-  onEvent({ stage: 'classifying-expression', message: '표현 방식 분류 완료' });
+    // Stage 4: 표현 방식 분류
+    onEvent({
+        stage: 'classifying-expression',
+        message: '표현 방식 분류 중...',
+    });
+    const expressionClassifications = await callClaudeJSON<
+        ExpressionClassification[]
+    >(buildExpressionPrompt(comments));
+    onEvent({
+        stage: 'classifying-expression',
+        message: '표현 방식 분류 완료',
+    });
 
-  // Stage 5: 집계
-  onEvent({ stage: 'aggregating', message: '결과 집계 중...' });
-  const feedbackDistribution = buildFeedbackDistribution(comments, feedbackClassifications);
-  const expressionDistribution = buildExpressionDistribution(expressionClassifications);
+    // Stage 5: 집계
+    onEvent({ stage: 'aggregating', message: '결과 집계 중...' });
+    const feedbackDistribution = buildFeedbackDistribution(
+        comments,
+        feedbackClassifications,
+    );
+    const expressionDistribution = buildExpressionDistribution(
+        expressionClassifications,
+    );
 
-  // Stage 6: 액션 아이템
-  onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 중...' });
-  const actionItems = await callClaudeJSON<ActionItem[]>(
-    buildActionsPrompt(meta.title, feedbackDistribution)
-  );
-  onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
+    // Stage 6: 액션 아이템
+    onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 중...' });
+    const actionItems = await callClaudeJSON<ActionItem[]>(
+        buildActionsPrompt(meta.title, feedbackDistribution),
+    );
+    onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
 
-  const channelName =
-    meta.channelId === process.env.SHOOKAWORLD_CHANNEL_ID
-      ? 'shookaworld'
-      : 'moneycomics';
+    const channelName =
+        meta.channelId === process.env.SHOOKAWORLD_CHANNEL_ID
+            ? 'shookaworld'
+            : 'moneycomics';
 
-  const result: AnalysisResult = {
-    videoId,
-    channelId: meta.channelId,
-    channelName,
-    videoTitle: meta.title,
-    videoUrl,
-    publishedAt: meta.publishedAt,
-    thumbnailUrl: meta.thumbnailUrl,
-    analyzedAt: new Date().toISOString(),
-    commentCount: comments.length,
-    feedbackDistribution,
-    expressionDistribution,
-    actionItems,
-  };
+    const result: AnalysisResult = {
+        videoId,
+        channelId: meta.channelId,
+        channelName,
+        videoTitle: meta.title,
+        videoUrl,
+        publishedAt: meta.publishedAt,
+        thumbnailUrl: meta.thumbnailUrl,
+        analyzedAt: new Date().toISOString(),
+        commentCount: comments.length,
+        feedbackDistribution,
+        expressionDistribution,
+        actionItems,
+    };
 
-  onEvent({ stage: 'done', result });
-  return result;
+    onEvent({ stage: 'done', result });
+    return result;
 }
 ```
 
@@ -758,6 +824,7 @@ git commit -m "feat: add 6-stage analysis pipeline"
 ## Task 5: 캐시 빌드 스크립트 + 사전 분석
 
 **Files:**
+
 - Create: `scripts/build-cache.ts`
 
 - [ ] **Step 1: `scripts/build-cache.ts` 작성**
@@ -769,49 +836,64 @@ import { google } from 'googleapis';
 import { runPipeline } from '../src/lib/pipeline';
 
 const youtube = google.youtube({
-  version: 'v3',
-  auth: process.env.YOUTUBE_API_KEY,
+    version: 'v3',
+    auth: process.env.YOUTUBE_API_KEY,
 });
 
-async function getLatestVideoIds(channelId: string, count = 2): Promise<string[]> {
-  const res = await youtube.search.list({
-    part: ['id'],
-    channelId,
-    maxResults: count,
-    order: 'date',
-    type: ['video'],
-  });
-  return (res.data.items || []).map((item) => item.id!.videoId!).filter(Boolean);
+async function getLatestVideoIds(
+    channelId: string,
+    count = 2,
+): Promise<string[]> {
+    const res = await youtube.search.list({
+        part: ['id'],
+        channelId,
+        maxResults: count,
+        order: 'date',
+        type: ['video'],
+    });
+    return (res.data.items || [])
+        .map((item) => item.id!.videoId!)
+        .filter(Boolean);
 }
 
 async function buildCache(channelId: string, channelSlug: string, count = 2) {
-  console.log(`\n[${channelSlug}] 최신 ${count}개 영상 분석 시작`);
-  const videoIds = await getLatestVideoIds(channelId, count);
+    console.log(`\n[${channelSlug}] 최신 ${count}개 영상 분석 시작`);
+    const videoIds = await getLatestVideoIds(channelId, count);
 
-  for (const videoId of videoIds) {
-    console.log(`  Processing ${videoId}...`);
-    const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-    const result = await runPipeline(videoUrl, (event) => {
-      console.log(`    [${event.stage}]`, 'message' in event ? event.message : '완료');
-    });
+    for (const videoId of videoIds) {
+        console.log(`  Processing ${videoId}...`);
+        const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        const result = await runPipeline(videoUrl, (event) => {
+            console.log(
+                `    [${event.stage}]`,
+                'message' in event ? event.message : '완료',
+            );
+        });
 
-    const outPath = path.join(process.cwd(), 'data', 'cache', `${channelSlug}-${videoId}.json`);
-    fs.writeFileSync(outPath, JSON.stringify(result, null, 2));
-    console.log(`  Saved: ${outPath}`);
-  }
+        const outPath = path.join(
+            process.cwd(),
+            'data',
+            'cache',
+            `${channelSlug}-${videoId}.json`,
+        );
+        fs.writeFileSync(outPath, JSON.stringify(result, null, 2));
+        console.log(`  Saved: ${outPath}`);
+    }
 }
 
 async function main() {
-  const shookaChannelId = process.env.SHOOKAWORLD_CHANNEL_ID;
-  const moneyChannelId = process.env.MONEYCOMICS_CHANNEL_ID;
+    const shookaChannelId = process.env.SHOOKAWORLD_CHANNEL_ID;
+    const moneyChannelId = process.env.MONEYCOMICS_CHANNEL_ID;
 
-  if (!shookaChannelId || !moneyChannelId) {
-    throw new Error('SHOOKAWORLD_CHANNEL_ID 또는 MONEYCOMICS_CHANNEL_ID 환경변수 없음');
-  }
+    if (!shookaChannelId || !moneyChannelId) {
+        throw new Error(
+            'SHOOKAWORLD_CHANNEL_ID 또는 MONEYCOMICS_CHANNEL_ID 환경변수 없음',
+        );
+    }
 
-  await buildCache(shookaChannelId, 'shookaworld');
-  await buildCache(moneyChannelId, 'moneycomics');
-  console.log('\n캐시 빌드 완료. data/cache/ 확인.');
+    await buildCache(shookaChannelId, 'shookaworld');
+    await buildCache(moneyChannelId, 'moneycomics');
+    console.log('\n캐시 빌드 완료. data/cache/ 확인.');
 }
 
 main().catch(console.error);
@@ -845,6 +927,7 @@ git commit -m "feat: add cache build script and pre-analyzed results"
 ## Task 6: SQLite DB + 카운터 + 캐시 레이어
 
 **Files:**
+
 - Create: `src/lib/db.ts`
 - Create: `src/lib/counter.ts`
 - Create: `src/lib/cache.ts`
@@ -859,16 +942,16 @@ import fs from 'fs';
 let _db: Database.Database | null = null;
 
 export function getDb(): Database.Database {
-  if (_db) return _db;
+    if (_db) return _db;
 
-  const dbPath = process.env.DB_PATH || './data/app.db';
-  const dir = path.dirname(dbPath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const dbPath = process.env.DB_PATH || './data/app.db';
+    const dir = path.dirname(dbPath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
-  _db = new Database(dbPath);
-  _db.pragma('journal_mode = WAL');
+    _db = new Database(dbPath);
+    _db.pragma('journal_mode = WAL');
 
-  _db.exec(`
+    _db.exec(`
     CREATE TABLE IF NOT EXISTS usage_counter (
       id INTEGER PRIMARY KEY CHECK (id = 1),
       count INTEGER NOT NULL DEFAULT 0,
@@ -885,7 +968,7 @@ export function getDb(): Database.Database {
     VALUES (1, 0, ${Date.now() + 24 * 60 * 60 * 1000});
   `);
 
-  return _db;
+    return _db;
 }
 ```
 
@@ -899,30 +982,32 @@ const LIMIT = parseInt(process.env.USAGE_LIMIT_PER_DAY || '15', 10);
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function getUsage(): UsageStatus {
-  const db = getDb();
-  const row = db.prepare('SELECT count, reset_at FROM usage_counter WHERE id = 1').get() as
-    | { count: number; reset_at: number }
-    | undefined;
+    const db = getDb();
+    const row = db
+        .prepare('SELECT count, reset_at FROM usage_counter WHERE id = 1')
+        .get() as { count: number; reset_at: number } | undefined;
 
-  if (!row) return { count: 0, limit: LIMIT, resetAt: Date.now() + DAY_MS };
+    if (!row) return { count: 0, limit: LIMIT, resetAt: Date.now() + DAY_MS };
 
-  if (Date.now() > row.reset_at) {
-    const newResetAt = Date.now() + DAY_MS;
-    db.prepare('UPDATE usage_counter SET count = 0, reset_at = ? WHERE id = 1').run(newResetAt);
-    return { count: 0, limit: LIMIT, resetAt: newResetAt };
-  }
+    if (Date.now() > row.reset_at) {
+        const newResetAt = Date.now() + DAY_MS;
+        db.prepare(
+            'UPDATE usage_counter SET count = 0, reset_at = ? WHERE id = 1',
+        ).run(newResetAt);
+        return { count: 0, limit: LIMIT, resetAt: newResetAt };
+    }
 
-  return { count: row.count, limit: LIMIT, resetAt: row.reset_at };
+    return { count: row.count, limit: LIMIT, resetAt: row.reset_at };
 }
 
 // 카운터 +1 시도. 한도 초과 시 false 반환
 export function consumeUsage(): boolean {
-  const usage = getUsage();
-  if (usage.count >= usage.limit) return false;
+    const usage = getUsage();
+    if (usage.count >= usage.limit) return false;
 
-  const db = getDb();
-  db.prepare('UPDATE usage_counter SET count = count + 1 WHERE id = 1').run();
-  return true;
+    const db = getDb();
+    db.prepare('UPDATE usage_counter SET count = count + 1 WHERE id = 1').run();
+    return true;
 }
 ```
 
@@ -938,46 +1023,51 @@ const CACHE_DIR = path.join(process.cwd(), 'data', 'cache');
 
 // 파일 캐시(사전 분석) 우선 → SQLite 캐시 → null
 export function getCached(videoId: string): AnalysisResult | null {
-  // 사전 분석 파일 탐색 (채널명 prefix 불문)
-  if (fs.existsSync(CACHE_DIR)) {
-    const files = fs.readdirSync(CACHE_DIR).filter((f) => f.endsWith(`-${videoId}.json`));
-    if (files.length > 0) {
-      const raw = fs.readFileSync(path.join(CACHE_DIR, files[0]), 'utf-8');
-      return JSON.parse(raw) as AnalysisResult;
+    // 사전 분석 파일 탐색 (채널명 prefix 불문)
+    if (fs.existsSync(CACHE_DIR)) {
+        const files = fs
+            .readdirSync(CACHE_DIR)
+            .filter((f) => f.endsWith(`-${videoId}.json`));
+        if (files.length > 0) {
+            const raw = fs.readFileSync(
+                path.join(CACHE_DIR, files[0]),
+                'utf-8',
+            );
+            return JSON.parse(raw) as AnalysisResult;
+        }
     }
-  }
 
-  // SQLite 캐시
-  const db = getDb();
-  const row = db
-    .prepare('SELECT result_json FROM analysis_cache WHERE video_id = ?')
-    .get(videoId) as { result_json: string } | undefined;
-  if (row) return JSON.parse(row.result_json) as AnalysisResult;
+    // SQLite 캐시
+    const db = getDb();
+    const row = db
+        .prepare('SELECT result_json FROM analysis_cache WHERE video_id = ?')
+        .get(videoId) as { result_json: string } | undefined;
+    if (row) return JSON.parse(row.result_json) as AnalysisResult;
 
-  return null;
+    return null;
 }
 
 export function setCached(videoId: string, result: AnalysisResult): void {
-  const db = getDb();
-  db.prepare(
-    'INSERT OR REPLACE INTO analysis_cache (video_id, result_json, created_at) VALUES (?, ?, ?)'
-  ).run(videoId, JSON.stringify(result), Date.now());
+    const db = getDb();
+    db.prepare(
+        'INSERT OR REPLACE INTO analysis_cache (video_id, result_json, created_at) VALUES (?, ?, ?)',
+    ).run(videoId, JSON.stringify(result), Date.now());
 }
 
 export function listCaseMetas() {
-  if (!fs.existsSync(CACHE_DIR)) return [];
-  const files = fs.readdirSync(CACHE_DIR).filter((f) => f.endsWith('.json'));
-  return files.map((file) => {
-    const raw = fs.readFileSync(path.join(CACHE_DIR, file), 'utf-8');
-    const result = JSON.parse(raw) as AnalysisResult;
-    return {
-      videoId: result.videoId,
-      channelName: result.channelName,
-      videoTitle: result.videoTitle,
-      thumbnailUrl: result.thumbnailUrl,
-      publishedAt: result.publishedAt,
-    };
-  });
+    if (!fs.existsSync(CACHE_DIR)) return [];
+    const files = fs.readdirSync(CACHE_DIR).filter((f) => f.endsWith('.json'));
+    return files.map((file) => {
+        const raw = fs.readFileSync(path.join(CACHE_DIR, file), 'utf-8');
+        const result = JSON.parse(raw) as AnalysisResult;
+        return {
+            videoId: result.videoId,
+            channelName: result.channelName,
+            videoTitle: result.videoTitle,
+            thumbnailUrl: result.thumbnailUrl,
+            publishedAt: result.publishedAt,
+        };
+    });
 }
 ```
 
@@ -993,6 +1083,7 @@ git commit -m "feat: add SQLite db, usage counter, and cache layer"
 ## Task 7: API Routes
 
 **Files:**
+
 - Create: `src/app/api/cases/route.ts`
 - Create: `src/app/api/usage/route.ts`
 - Create: `src/app/api/analyze/route.ts`
@@ -1004,8 +1095,8 @@ import { NextResponse } from 'next/server';
 import { listCaseMetas } from '@/lib/cache';
 
 export async function GET() {
-  const cases = listCaseMetas();
-  return NextResponse.json(cases);
+    const cases = listCaseMetas();
+    return NextResponse.json(cases);
 }
 ```
 
@@ -1016,8 +1107,8 @@ import { NextResponse } from 'next/server';
 import { getUsage } from '@/lib/counter';
 
 export async function GET() {
-  const usage = getUsage();
-  return NextResponse.json(usage);
+    const usage = getUsage();
+    return NextResponse.json(usage);
 }
 ```
 
@@ -1035,77 +1126,98 @@ import type { PipelineEvent } from '@/lib/types';
 const schema = z.object({ videoUrl: z.string().url() });
 
 const ALLOWED_CHANNELS = [
-  process.env.SHOOKAWORLD_CHANNEL_ID,
-  process.env.MONEYCOMICS_CHANNEL_ID,
+    process.env.SHOOKAWORLD_CHANNEL_ID,
+    process.env.MONEYCOMICS_CHANNEL_ID,
 ].filter(Boolean);
 
 function encodeSSE(event: PipelineEvent): string {
-  return `data: ${JSON.stringify(event)}\n\n`;
+    return `data: ${JSON.stringify(event)}\n\n`;
 }
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null);
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) {
-    return new Response(JSON.stringify({ error: '유효하지 않은 요청' }), { status: 400 });
-  }
+    const body = await req.json().catch(() => null);
+    const parsed = schema.safeParse(body);
+    if (!parsed.success) {
+        return new Response(JSON.stringify({ error: '유효하지 않은 요청' }), {
+            status: 400,
+        });
+    }
 
-  const { videoUrl } = parsed.data;
-  const videoId = extractVideoId(videoUrl);
-  if (!videoId) {
-    return new Response(JSON.stringify({ error: '유효하지 않은 YouTube URL' }), { status: 400 });
-  }
+    const { videoUrl } = parsed.data;
+    const videoId = extractVideoId(videoUrl);
+    if (!videoId) {
+        return new Response(
+            JSON.stringify({ error: '유효하지 않은 YouTube URL' }),
+            {
+                status: 400,
+            },
+        );
+    }
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      const send = (event: PipelineEvent) => {
-        controller.enqueue(new TextEncoder().encode(encodeSSE(event)));
-      };
+    const stream = new ReadableStream({
+        async start(controller) {
+            const send = (event: PipelineEvent) => {
+                controller.enqueue(new TextEncoder().encode(encodeSSE(event)));
+            };
 
-      try {
-        // 캐시 확인
-        const cached = getCached(videoId);
-        if (cached) {
-          send({ stage: 'done', result: cached });
-          controller.close();
-          return;
-        }
+            try {
+                // 캐시 확인
+                const cached = getCached(videoId);
+                if (cached) {
+                    send({ stage: 'done', result: cached });
+                    controller.close();
+                    return;
+                }
 
-        // 채널 검증은 파이프라인 내 getVideoMeta 후에 수행
-        // 카운터 차감 시도
-        const allowed = consumeUsage();
-        if (!allowed) {
-          send({ stage: 'error', message: '오늘 분석 한도에 도달했습니다. 내일 다시 시도해주세요.' });
-          controller.close();
-          return;
-        }
+                // 채널 검증은 파이프라인 내 getVideoMeta 후에 수행
+                // 카운터 차감 시도
+                const allowed = consumeUsage();
+                if (!allowed) {
+                    send({
+                        stage: 'error',
+                        message:
+                            '오늘 분석 한도에 도달했습니다. 내일 다시 시도해주세요.',
+                    });
+                    controller.close();
+                    return;
+                }
 
-        const result = await runPipeline(videoUrl, send);
+                const result = await runPipeline(videoUrl, send);
 
-        // 채널 검증
-        if (ALLOWED_CHANNELS.length > 0 && !ALLOWED_CHANNELS.includes(result.channelId)) {
-          send({ stage: 'error', message: '이 도구는 슈카월드 / 머니코믹스 채널 영상만 분석합니다.' });
-          controller.close();
-          return;
-        }
+                // 채널 검증
+                if (
+                    ALLOWED_CHANNELS.length > 0 &&
+                    !ALLOWED_CHANNELS.includes(result.channelId)
+                ) {
+                    send({
+                        stage: 'error',
+                        message:
+                            '이 도구는 슈카월드 / 머니코믹스 채널 영상만 분석합니다.',
+                    });
+                    controller.close();
+                    return;
+                }
 
-        setCached(videoId, result);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : '분석 중 오류가 발생했습니다.';
-        send({ stage: 'error', message });
-      } finally {
-        controller.close();
-      }
-    },
-  });
+                setCached(videoId, result);
+            } catch (err) {
+                const message =
+                    err instanceof Error
+                        ? err.message
+                        : '분석 중 오류가 발생했습니다.';
+                send({ stage: 'error', message });
+            } finally {
+                controller.close();
+            }
+        },
+    });
 
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      Connection: 'keep-alive',
-    },
-  });
+    return new Response(stream, {
+        headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            Connection: 'keep-alive',
+        },
+    });
 }
 ```
 
@@ -1133,6 +1245,7 @@ git commit -m "feat: add API routes for cases, usage, and analyze SSE"
 ## Task 8: 프론트엔드 컴포넌트
 
 **Files:**
+
 - Modify: `src/app/page.tsx`, `src/app/layout.tsx`
 - Create: `src/components/Landing.tsx`
 - Create: `src/components/UsageBadge.tsx`
@@ -1607,6 +1720,7 @@ git commit -m "feat: add frontend components (A/B/C/D areas)"
 ## Task 9: Docker 컨테이너화
 
 **Files:**
+
 - Create: `Dockerfile`
 - Create: `docker-compose.yml`
 - Create: `Caddyfile`
@@ -1651,7 +1765,7 @@ CMD ["node", "server.js"]
 ```javascript
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+    output: 'standalone',
 };
 
 export default nextConfig;
@@ -1675,37 +1789,37 @@ export default nextConfig;
 
 ```yaml
 services:
-  app:
-    build: .
-    restart: unless-stopped
-    env_file: .env
-    volumes:
-      - app-data:/data
-    networks:
-      - internal
+    app:
+        build: .
+        restart: unless-stopped
+        env_file: .env
+        volumes:
+            - app-data:/data
+        networks:
+            - internal
 
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy-data:/data
-      - caddy-config:/config
-    depends_on:
-      - app
-    networks:
-      - internal
+    caddy:
+        image: caddy:2-alpine
+        restart: unless-stopped
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile
+            - caddy-data:/data
+            - caddy-config:/config
+        depends_on:
+            - app
+        networks:
+            - internal
 
 volumes:
-  app-data:
-  caddy-data:
-  caddy-config:
+    app-data:
+    caddy-data:
+    caddy-config:
 
 networks:
-  internal:
+    internal:
 ```
 
 - [ ] **Step 5: 로컬 Docker 빌드 테스트**
@@ -1744,7 +1858,7 @@ git commit -m "feat: add Docker multi-stage build and Caddy reverse proxy"
 - AWS 콘솔 → EC2 → 인스턴스 시작
 - AMI: Ubuntu 24.04 LTS (또는 Amazon Linux 2023)
 - 인스턴스 유형: t3.micro (x86) 또는 t4g.small (ARM)
-  - t4g 선택 시: `docker buildx build --platform linux/arm64 -t shooka .` 로 빌드
+    - t4g 선택 시: `docker buildx build --platform linux/arm64 -t shooka .` 로 빌드
 - 보안 그룹: 22 (SSH), 80 (HTTP), 443 (HTTPS) 인바운드 허용
 - 키 페어 생성 및 저장
 
