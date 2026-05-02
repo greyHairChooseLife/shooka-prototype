@@ -1,5 +1,5 @@
 import { getVideoMeta, fetchComments, type RawComment } from '@/lib/youtube';
-import { callClaudeJSON } from '@/lib/anthropic';
+import { callLLMJSON } from '@/lib/llm';
 import {
     buildFeedbackPrompt,
     type FeedbackClassification,
@@ -30,12 +30,18 @@ function buildFeedbackDistribution(
     comments: RawComment[],
     classifications: FeedbackClassification[],
 ): FeedbackCategory[] {
-    const map = new Map<string, { weightedScore: number; comments: RawComment[] }>();
+    const map = new Map<
+        string,
+        { weightedScore: number; comments: RawComment[] }
+    >();
 
     for (const cls of classifications) {
         const comment = comments[cls.index];
         if (!comment) continue;
-        const existing = map.get(cls.category) || { weightedScore: 0, comments: [] };
+        const existing = map.get(cls.category) || {
+            weightedScore: 0,
+            comments: [],
+        };
         existing.weightedScore += comment.likeCount + 1;
         existing.comments.push(comment);
         map.set(cls.category, existing);
@@ -49,7 +55,11 @@ function buildFeedbackDistribution(
             sampleComments: data.comments
                 .sort((a, b) => b.likeCount - a.likeCount)
                 .slice(0, 3)
-                .map((c) => ({ text: c.text, likeCount: c.likeCount, author: c.author })),
+                .map((c) => ({
+                    text: c.text,
+                    likeCount: c.likeCount,
+                    author: c.author,
+                })),
         }))
         .sort((a, b) => b.weightedScore - a.weightedScore);
 }
@@ -70,7 +80,10 @@ export async function runPipeline(
     videoUrl: string,
     onEvent: (event: PipelineEvent) => void,
 ): Promise<AnalysisResult> {
-    onEvent({ stage: 'collecting', message: '영상 메타데이터·댓글 수집 중...' });
+    onEvent({
+        stage: 'collecting',
+        message: '영상 메타데이터·댓글 수집 중...',
+    });
     const videoId =
         videoUrl.match(/[?&]v=([^&]+)/)?.at(1) ||
         videoUrl.match(/youtu\.be\/([^?]+)/)?.at(1);
@@ -80,36 +93,61 @@ export async function runPipeline(
         getVideoMeta(videoId),
         fetchComments(videoId),
     ]);
-    onEvent({ stage: 'collecting', message: `댓글 ${rawComments.length}개 수집 완료` });
+    onEvent({
+        stage: 'collecting',
+        message: `댓글 ${rawComments.length}개 수집 완료`,
+    });
 
     onEvent({ stage: 'filtering', message: '댓글 정제 중...' });
     const comments = filterComments(rawComments);
-    onEvent({ stage: 'filtering', message: `${comments.length}개 댓글 정제 완료` });
+    onEvent({
+        stage: 'filtering',
+        message: `${comments.length}개 댓글 정제 완료`,
+    });
 
-    onEvent({ stage: 'classifying-feedback', message: '잠재 피드백 분류 중...' });
-    const feedbackClassifications = await callClaudeJSON<FeedbackClassification[]>(
+    onEvent({
+        stage: 'classifying-feedback',
+        message: '잠재 피드백 분류 중...',
+    });
+    const feedbackClassifications = await callLLMJSON<FeedbackClassification[]>(
         buildFeedbackPrompt(comments),
     );
-    onEvent({ stage: 'classifying-feedback', message: '잠재 피드백 분류 완료' });
+    onEvent({
+        stage: 'classifying-feedback',
+        message: '잠재 피드백 분류 완료',
+    });
 
-    onEvent({ stage: 'classifying-expression', message: '표현 방식 분류 중...' });
-    const expressionClassifications = await callClaudeJSON<ExpressionClassification[]>(
-        buildExpressionPrompt(comments),
-    );
-    onEvent({ stage: 'classifying-expression', message: '표현 방식 분류 완료' });
+    onEvent({
+        stage: 'classifying-expression',
+        message: '표현 방식 분류 중...',
+    });
+    const expressionClassifications = await callLLMJSON<
+        ExpressionClassification[]
+    >(buildExpressionPrompt(comments));
+    onEvent({
+        stage: 'classifying-expression',
+        message: '표현 방식 분류 완료',
+    });
 
     onEvent({ stage: 'aggregating', message: '결과 집계 중...' });
-    const feedbackDistribution = buildFeedbackDistribution(comments, feedbackClassifications);
-    const expressionDistribution = buildExpressionDistribution(expressionClassifications);
+    const feedbackDistribution = buildFeedbackDistribution(
+        comments,
+        feedbackClassifications,
+    );
+    const expressionDistribution = buildExpressionDistribution(
+        expressionClassifications,
+    );
 
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 중...' });
-    const actionItems = await callClaudeJSON<ActionItem[]>(
+    const actionItems = await callLLMJSON<ActionItem[]>(
         buildActionsPrompt(meta.title, feedbackDistribution),
     );
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
 
     const channelName =
-        meta.channelId === process.env.SHOOKAWORLD_CHANNEL_ID ? 'shookaworld' : 'moneycomics';
+        meta.channelId === process.env.SHOOKAWORLD_CHANNEL_ID
+            ? 'shookaworld'
+            : 'moneycomics';
 
     const result: AnalysisResult = {
         videoId,
