@@ -1,6 +1,6 @@
 # Shooka Prototype Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** 슈카월드·머니코믹스 YouTube 댓글을 온디맨드 분석해 잠재 피드백 분포와 액션 아이템을 보여주는 라이브 웹 서비스를 구축한다.
 
@@ -71,7 +71,7 @@ shooka-prototype/
 - Create: `.env.example`, `.gitignore`
 - Create: `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/globals.css`
 
-- [ ] **Step 1: Next.js 프로젝트 생성**
+- [x] **Step 1: Next.js 프로젝트 생성**
 
 ```bash
 cd /home/sy/Documents/zk/area/find-job
@@ -96,7 +96,7 @@ npx create-next-app@latest shooka-prototype \
   --import-alias "@/*"
 ```
 
-- [ ] **Step 2: 추가 의존성 설치**
+- [x] **Step 2: 추가 의존성 설치**
 
 ```bash
 cd shooka-prototype
@@ -104,7 +104,7 @@ npm install @anthropic-ai/sdk googleapis better-sqlite3 recharts zod
 npm install --save-dev @types/better-sqlite3 tsx
 ```
 
-- [ ] **Step 3: `.env.example` 작성**
+- [x] **Step 3: `.env.example` 작성**
 
 ```bash
 cat > .env.example << 'EOF'
@@ -130,7 +130,7 @@ DOMAIN=
 EOF
 ```
 
-- [ ] **Step 4: `.gitignore`에 민감 파일 추가**
+- [x] **Step 4: `.gitignore`에 민감 파일 추가**
 
 `.gitignore`에 아래 항목이 없으면 추가:
 
@@ -141,20 +141,20 @@ data/app.db
 data/*.db
 ```
 
-- [ ] **Step 5: `data/cache/` 디렉토리 생성 및 `.gitkeep`**
+- [x] **Step 5: `data/cache/` 디렉토리 생성 및 `.gitkeep`**
 
 ```bash
 mkdir -p data/cache
 touch data/cache/.gitkeep
 ```
 
-- [ ] **Step 6: `scripts/` 디렉토리 생성**
+- [x] **Step 6: `scripts/` 디렉토리 생성**
 
 ```bash
 mkdir -p scripts
 ```
 
-- [ ] **Step 7: `package.json`에 스크립트 추가**
+- [x] **Step 7: `package.json`에 스크립트 추가**
 
 `package.json`의 `scripts` 블록에 추가:
 
@@ -170,7 +170,7 @@ mkdir -p scripts
 }
 ```
 
-- [ ] **Step 8: 개발 서버 실행 확인**
+- [x] **Step 8: 개발 서버 실행 확인**
 
 ```bash
 npm run dev
@@ -178,7 +178,7 @@ npm run dev
 
 Expected: `http://localhost:3000` 접속 시 Next.js 기본 페이지 표시. 오류 없이 컴파일됨.
 
-- [ ] **Step 9: 커밋**
+- [x] **Step 9: 커밋**
 
 ```bash
 git init
@@ -194,7 +194,7 @@ git commit -m "feat: initialize Next.js project with dependencies"
 
 - Create: `src/lib/types.ts`
 
-- [ ] **Step 1: `src/lib/types.ts` 작성**
+- [x] **Step 1: `src/lib/types.ts` 작성**
 
 ```typescript
 export type ChannelName = 'shookaworld' | 'moneycomics';
@@ -263,7 +263,7 @@ export type PipelineEvent =
     | { stage: 'error'; message: string };
 ```
 
-- [ ] **Step 2: 커밋**
+- [x] **Step 2: 커밋**
 
 ```bash
 git add src/lib/types.ts
@@ -278,7 +278,7 @@ git commit -m "feat: add shared types"
 
 - Create: `src/lib/youtube.ts`
 
-- [ ] **Step 1: `src/lib/youtube.ts` 작성**
+- [x] **Step 1: `src/lib/youtube.ts` 작성**
 
 YouTube Data API v3의 `commentThreads.list`는 `order=relevance` (기본값)로 호출하면 관련도 순. 좋아요 상위 50개는 클라이언트에서 재정렬한다.
 
@@ -387,7 +387,7 @@ export async function fetchComments(videoId: string): Promise<RawComment[]> {
 }
 ```
 
-- [ ] **Step 2: 환경변수 `.env.local` 작성 (수동)**
+- [x] **Step 2: 환경변수 `.env.local` 작성 (수동)**
 
 아래를 `.env.local`에 직접 채워 넣기:
 
@@ -401,7 +401,7 @@ MONEYCOMICS_CHANNEL_ID=<확인 후 입력>
 DB_PATH=./data/app.db
 ```
 
-- [ ] **Step 3: `scripts/seed-channels.ts` 작성 (채널 ID 확인용)**
+- [x] **Step 3: `scripts/seed-channels.ts` 작성 (채널 ID 확인용)**
 
 ```typescript
 import { google } from 'googleapis';
@@ -432,7 +432,7 @@ findChannel('슈카월드').then(() => findChannel('머니코믹스'));
 YOUTUBE_API_KEY=<키> npx tsx scripts/seed-channels.ts
 ```
 
-- [ ] **Step 4: 커밋**
+- [x] **Step 4: 커밋**
 
 ```bash
 git add src/lib/youtube.ts scripts/seed-channels.ts
@@ -450,7 +450,7 @@ git commit -m "feat: add YouTube API wrapper and channel ID helper"
 - Create: `src/prompts/classify-expression.ts`
 - Create: `src/prompts/generate-actions.ts`
 
-- [ ] **Step 1: `src/lib/anthropic.ts` 작성**
+- [x] **Step 1: `src/lib/anthropic.ts` 작성**
 
 ````typescript
 import Anthropic from '@anthropic-ai/sdk';
@@ -480,7 +480,7 @@ export async function callClaudeJSON<T>(prompt: string): Promise<T> {
 }
 ````
 
-- [ ] **Step 2: `src/prompts/classify-feedback.ts` 작성**
+- [x] **Step 2: `src/prompts/classify-feedback.ts` 작성**
 
 ```typescript
 import type { RawComment } from '@/lib/youtube';
@@ -528,7 +528,7 @@ ${commentsStr}
 }
 ```
 
-- [ ] **Step 3: `src/prompts/classify-expression.ts` 작성**
+- [x] **Step 3: `src/prompts/classify-expression.ts` 작성**
 
 ```typescript
 import type { RawComment } from '@/lib/youtube';
@@ -570,7 +570,7 @@ ${commentsStr}
 }
 ```
 
-- [ ] **Step 4: `src/prompts/generate-actions.ts` 작성**
+- [x] **Step 4: `src/prompts/generate-actions.ts` 작성**
 
 ```typescript
 import type { FeedbackCategory } from '@/lib/types';
@@ -616,7 +616,7 @@ ${feedbackStr}
 }
 ```
 
-- [ ] **Step 5: 커밋**
+- [x] **Step 5: 커밋**
 
 ```bash
 git add src/lib/anthropic.ts src/prompts/
@@ -631,7 +631,7 @@ git commit -m "feat: add Claude wrapper and classification prompts"
 
 - Create: `src/lib/pipeline.ts`
 
-- [ ] **Step 1: `src/lib/pipeline.ts` 작성**
+- [x] **Step 1: `src/lib/pipeline.ts` 작성**
 
 ```typescript
 import { getVideoMeta, fetchComments, type RawComment } from '@/lib/youtube';
@@ -812,7 +812,7 @@ export async function runPipeline(
 }
 ```
 
-- [ ] **Step 2: 커밋**
+- [x] **Step 2: 커밋**
 
 ```bash
 git add src/lib/pipeline.ts
@@ -827,7 +827,7 @@ git commit -m "feat: add 6-stage analysis pipeline"
 
 - Create: `scripts/build-cache.ts`
 
-- [ ] **Step 1: `scripts/build-cache.ts` 작성**
+- [x] **Step 1: `scripts/build-cache.ts` 작성**
 
 ```typescript
 import fs from 'fs';
@@ -899,7 +899,7 @@ async function main() {
 main().catch(console.error);
 ```
 
-- [ ] **Step 2: 캐시 빌드 실행 (환경변수 설정 후)**
+- [x] **Step 2: 캐시 빌드 실행 (환경변수 설정 후)**
 
 ```bash
 # .env.local의 채널 ID가 채워져 있어야 함
@@ -908,14 +908,14 @@ npm run cache:build
 
 Expected: `data/cache/shookaworld-{id}.json` × 2, `data/cache/moneycomics-{id}.json` × 2 생성
 
-- [ ] **Step 3: 생성된 JSON 수동 확인**
+- [x] **Step 3: 생성된 JSON 수동 확인**
 
 ```bash
 ls data/cache/*.json | wc -l   # 4 이어야 함
 cat data/cache/shookaworld-*.json | python3 -m json.tool | head -50
 ```
 
-- [ ] **Step 4: 커밋 (JSON 포함)**
+- [x] **Step 4: 커밋 (JSON 포함)**
 
 ```bash
 git add scripts/build-cache.ts data/cache/*.json
