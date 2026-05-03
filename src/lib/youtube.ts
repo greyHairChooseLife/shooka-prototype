@@ -1,4 +1,5 @@
 import { google } from 'googleapis';
+import { YoutubeTranscript } from 'youtube-transcript';
 
 const youtube = google.youtube({
     version: 'v3',
@@ -16,6 +17,7 @@ export type VideoMeta = {
     videoId: string;
     channelId: string;
     title: string;
+    description: string;
     publishedAt: string;
     thumbnailUrl: string;
 };
@@ -51,6 +53,7 @@ export async function getVideoMeta(videoId: string): Promise<VideoMeta> {
         videoId,
         channelId: snippet.channelId!,
         title: snippet.title!,
+        description: snippet.description || '',
         publishedAt: snippet.publishedAt!,
         thumbnailUrl:
             snippet.thumbnails?.high?.url ||
@@ -89,6 +92,7 @@ export async function fetchComments(videoId: string): Promise<RawComment[]> {
     }
 
     const sorted = [...allComments].sort((a, b) => b.likeCount - a.likeCount);
+
     const top50 = sorted.slice(0, 50);
 
     const top50Texts = new Set(top50.map((c) => c.text));
@@ -96,4 +100,17 @@ export async function fetchComments(videoId: string): Promise<RawComment[]> {
     const shuffled = rest.sort(() => Math.random() - 0.5).slice(0, 50);
 
     return [...top50, ...shuffled];
+}
+
+// 자막이 없으면 null 반환
+export async function fetchTranscript(videoId: string): Promise<string | null> {
+    try {
+        const items = await YoutubeTranscript.fetchTranscript(videoId, { lang: 'ko' })
+            .catch(() => YoutubeTranscript.fetchTranscript(videoId));
+        const text = items.map((i) => i.text).join(' ');
+        // 토큰 절약을 위해 최대 8000자로 자름
+        return text.slice(0, 8000);
+    } catch {
+        return null;
+    }
 }

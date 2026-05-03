@@ -36,6 +36,10 @@
 
 {{videoTitle}}
 
+### 영상 요약
+
+{{videoSummary}}
+
 ### 댓글 카테고리 분포 (좋아요 가중 점수 순)
 
 {{categoryDistribution}}

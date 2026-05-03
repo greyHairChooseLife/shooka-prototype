@@ -33,6 +33,7 @@ export type AnalysisResult = {
     channelId: string;
     channelName: ChannelName;
     videoTitle: string;
+    videoSummary: string;
     videoUrl: string;
     publishedAt: string;
     thumbnailUrl: string;
@@ -59,6 +60,7 @@ export type CaseMeta = {
 export type PipelineEvent =
     | { stage: 'collecting'; message: string }
     | { stage: 'filtering'; message: string }
+    | { stage: 'summarizing'; message: string }
     | { stage: 'classifying-feedback'; message: string }
     | { stage: 'aggregating'; message: string }
     | { stage: 'generating-actions'; message: string }

@@ -6,7 +6,7 @@ export type CommentClassification = {
     category: string | null;
 };
 
-export function buildClassifyPrompt(comments: RawComment[]): string {
+export function buildClassifyPrompt(comments: RawComment[], videoSummary: string): string {
     const categoriesStr = ANALYSIS_CATEGORIES.map(
         (c, i) => `${i + 1}. ${c}`,
     ).join('\n');
@@ -14,7 +14,10 @@ export function buildClassifyPrompt(comments: RawComment[]): string {
         .map((c, i) => `[${i}] (좋아요 ${c.likeCount}) ${c.text}`)
         .join('\n');
 
-    return `당신은 YouTube 댓글 분류 전문가입니다. 아래 댓글들을 4가지 카테고리로 분류하세요.
+    return `당신은 YouTube 댓글 분류 전문가입니다. 아래 영상 요약과 댓글들을 참고하여 각 댓글을 4가지 카테고리로 분류하세요.
+
+## 영상 요약
+${videoSummary}
 
 ## 카테고리
 ${categoriesStr}

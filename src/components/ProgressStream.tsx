@@ -4,6 +4,7 @@ import type { PipelineEvent } from '@/lib/types';
 const STAGES = [
     { key: 'collecting', label: '댓글 수집' },
     { key: 'filtering', label: '댓글 정제' },
+    { key: 'summarizing', label: '영상 요약' },
     { key: 'classifying-feedback', label: '댓글 분류' },
     { key: 'aggregating', label: '집계' },
     { key: 'generating-actions', label: '액션 아이템 생성' },

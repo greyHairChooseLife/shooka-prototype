@@ -4,7 +4,7 @@ import { callOpenAI } from '@/lib/openai';
 
 const provider = process.env.AI_PROVIDER || 'openai';
 
-async function callLLM(prompt: string): Promise<string> {
+export async function callLLM(prompt: string): Promise<string> {
     if (provider === 'gemini') return callGemini(prompt);
     if (provider === 'openai') return callOpenAI(prompt);
     return callClaude(prompt);

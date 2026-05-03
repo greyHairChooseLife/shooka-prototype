@@ -3,6 +3,7 @@ import { getPrompt, actionsPromptName } from '@/lib/prompt-store';
 
 export function buildActionsPrompt(
     videoTitle: string,
+    videoSummary: string,
     categoryDistribution: FeedbackCategory[],
     channel: ChannelName,
 ): string {
@@ -18,5 +19,6 @@ export function buildActionsPrompt(
 
     return getPrompt(actionsPromptName(channel))
         .replace('{{videoTitle}}', videoTitle)
+        .replace('{{videoSummary}}', videoSummary)
         .replace('{{categoryDistribution}}', distributionStr);
 }
