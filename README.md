@@ -86,7 +86,7 @@ rsync -avz --progress \
 
 # 3. 서버에서 재시작
 ssh -i /path/to/key.pem ubuntu@<서버IP> \
-  "docker load < shooka-prototype.tar.gz && docker compose up -d"
+  "docker load < shooka-prototype.tar.gz && docker compose down && docker compose up -d"
 ```
 
 환경변수(`.env`) 또는 `docker-compose.yml`, `Caddyfile`이 변경된 경우 해당 파일도 rsync에 추가.

@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.5.0] - 2026-05-04
+
+### 추가
+
+- Docker 멀티스테이지 빌드 (`Dockerfile`) — deps / builder / runner 3단계, `better-sqlite3` native addon 별도 복사
+- `docker-compose.yml` — app + Caddy 서비스, SQLite 영속성 볼륨
+- `Caddyfile` — `$DOMAIN` 환경변수로 HTTP/HTTPS 자동 전환 (Let's Encrypt)
+- `.dockerignore` 추가
+- `README.md` — 서버 초기 세팅 및 운영 업데이트 가이드
+
+### 수정
+
+- API 클라이언트 초기화를 모듈 레벨 → 함수 내부로 이동 (Docker 빌드 타임 환경변수 오류 수정)
+- 볼륨 마운트 경로 `/data` → `/app/data` 정렬 (권한 오류 수정)
+- `caddy` 서비스에 `env_file` 추가 (`$DOMAIN` 미전달로 HTTPS 미적용 수정)
+
+---
+
 ## [1.4.0] - 2026-05-04
 
 ### 추가
