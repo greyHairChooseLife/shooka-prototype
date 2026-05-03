@@ -20,11 +20,11 @@ export default function AnalysisResultView({
 
     return (
         <div className="space-y-8">
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4 sm:flex-row">
                 <img
                     src={result.thumbnailUrl}
                     alt={result.videoTitle}
-                    className="w-40 rounded-lg"
+                    className="w-full rounded-lg sm:w-40 sm:shrink-0"
                 />
                 <div className="flex-1">
                     <a
