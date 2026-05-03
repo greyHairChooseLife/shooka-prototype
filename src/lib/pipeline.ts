@@ -18,6 +18,7 @@ import type {
     ActionItem,
     PipelineEvent,
 } from '@/lib/types';
+import { CATEGORY_LABELS, type AnalysisCategory } from '@/lib/types';
 
 function filterComments(comments: RawComment[]): RawComment[] {
     return comments.filter((c) => {
@@ -148,17 +149,21 @@ export async function runPipeline(
         ),
     );
 
-    // 카테고리별 가중치 점수 맵 생성
+    // 한국어 카테고리명 → 가중치 점수 맵
     const scoreMap = new Map(
-        categoryDistribution.map((c) => [c.category, c.weightedScore]),
+        categoryDistribution.map((c) => [
+            CATEGORY_LABELS[c.category as AnalysisCategory] ?? c.category,
+            c.weightedScore,
+        ]),
     );
 
-    // LLM 응답을 카테고리 가중치 점수 내림차순으로 정렬
-    const actionItems = [...rawActionItems].sort((a, b) => {
-        const scoreA = scoreMap.get(a.sourceCategory) ?? 0;
-        const scoreB = scoreMap.get(b.sourceCategory) ?? 0;
-        return scoreB - scoreA;
-    });
+    const actionItems = [...rawActionItems]
+        .filter((item) => Array.isArray(item.sourceCommentIndices) && item.sourceCommentIndices.length > 0)
+        .sort((a, b) => {
+            const scoreA = scoreMap.get(a.sourceCategory) ?? 0;
+            const scoreB = scoreMap.get(b.sourceCategory) ?? 0;
+            return scoreB - scoreA;
+        });
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
 
     const result: AnalysisResult = {

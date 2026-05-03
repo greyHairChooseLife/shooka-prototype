@@ -32,8 +32,8 @@ export type FeedbackCategory = {
 export type ActionItem = {
     title: string;
     rationale: string;
-    sourceCategory: AnalysisCategory;
-    categoryIndex: number;
+    sourceCategory: string;
+    sourceCommentIndices: number[];
 };
 
 export type AnalysisResult = {
