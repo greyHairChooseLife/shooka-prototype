@@ -1088,7 +1088,7 @@ git commit -m "feat: add SQLite db, usage counter, and cache layer"
 - Create: `src/app/api/usage/route.ts`
 - Create: `src/app/api/analyze/route.ts`
 
-- [ ] **Step 1: `src/app/api/cases/route.ts` 작성**
+- [x] **Step 1: `src/app/api/cases/route.ts` 작성**
 
 ```typescript
 import { NextResponse } from 'next/server';
@@ -1100,7 +1100,7 @@ export async function GET() {
 }
 ```
 
-- [ ] **Step 2: `src/app/api/usage/route.ts` 작성**
+- [x] **Step 2: `src/app/api/usage/route.ts` 작성**
 
 ```typescript
 import { NextResponse } from 'next/server';
@@ -1112,7 +1112,7 @@ export async function GET() {
 }
 ```
 
-- [ ] **Step 3: `src/app/api/analyze/route.ts` 작성**
+- [x] **Step 3: `src/app/api/analyze/route.ts` 작성**
 
 ```typescript
 import { NextRequest } from 'next/server';
@@ -1221,7 +1221,7 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-- [ ] **Step 4: API 동작 확인**
+- [x] **Step 4: API 동작 확인**
 
 ```bash
 npm run dev &
@@ -1233,7 +1233,7 @@ curl http://localhost:3000/api/usage | python3 -m json.tool
 
 Expected: cases는 4개 JSON 배열, usage는 `{count, limit, resetAt}`.
 
-- [ ] **Step 5: 커밋**
+- [x] **Step 5: 커밋**
 
 ```bash
 git add src/app/api/
