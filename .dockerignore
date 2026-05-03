@@ -1,0 +1,7 @@
+.git
+.next
+node_modules
+data/app.db
+data/*.db
+.env
+.env.local
