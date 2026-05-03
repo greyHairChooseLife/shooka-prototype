@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
                 const cached = getCached(videoId);
                 if (cached) {
                     send({ stage: 'done', result: cached });
-                    controller.close();
                     return;
                 }
 
@@ -58,7 +57,6 @@ export async function POST(req: NextRequest) {
                         message:
                             '오늘 분석 한도에 도달했습니다. 내일 자정에 초기화됩니다.',
                     });
-                    controller.close();
                     return;
                 }
 
@@ -73,7 +71,6 @@ export async function POST(req: NextRequest) {
                         message:
                             '이 도구는 슈카월드 / 머니코믹스 채널 영상만 분석합니다.',
                     });
-                    controller.close();
                     return;
                 }
 
