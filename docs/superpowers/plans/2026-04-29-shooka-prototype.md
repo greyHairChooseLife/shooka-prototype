@@ -932,7 +932,7 @@ git commit -m "feat: add cache build script and pre-analyzed results"
 - Create: `src/lib/counter.ts`
 - Create: `src/lib/cache.ts`
 
-- [ ] **Step 1: `src/lib/db.ts` 작성**
+- [x] **Step 1: `src/lib/db.ts` 작성**
 
 ```typescript
 import Database from 'better-sqlite3';
@@ -972,7 +972,7 @@ export function getDb(): Database.Database {
 }
 ```
 
-- [ ] **Step 2: `src/lib/counter.ts` 작성**
+- [x] **Step 2: `src/lib/counter.ts` 작성**
 
 ```typescript
 import { getDb } from '@/lib/db';
@@ -1011,7 +1011,7 @@ export function consumeUsage(): boolean {
 }
 ```
 
-- [ ] **Step 3: `src/lib/cache.ts` 작성**
+- [x] **Step 3: `src/lib/cache.ts` 작성**
 
 ```typescript
 import fs from 'fs';
@@ -1071,7 +1071,7 @@ export function listCaseMetas() {
 }
 ```
 
-- [ ] **Step 4: 커밋**
+- [x] **Step 4: 커밋**
 
 ```bash
 git add src/lib/db.ts src/lib/counter.ts src/lib/cache.ts
