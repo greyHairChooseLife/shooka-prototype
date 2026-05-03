@@ -44,7 +44,7 @@ export default function ResultPage() {
     return (
         <div className="mx-auto flex max-w-6xl flex-col gap-0 px-4 py-8 md:flex-row">
             {/* 사이드바 — 분석 목록 */}
-            <aside className="w-full shrink-0 border-b border-gray-800 pb-4 md:w-72 md:border-b-0 md:border-r md:pb-0 md:pr-4">
+            <aside className="w-full shrink-0 border-b border-gray-800 pb-4 md:w-72 md:border-r md:border-b-0 md:pr-4 md:pb-0">
                 <button
                     onClick={() => setSidebarOpen((v) => !v)}
                     className="mb-4 flex w-full items-center justify-between text-sm font-semibold text-gray-400 hover:text-gray-200"
@@ -56,7 +56,12 @@ export default function ResultPage() {
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                     >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                        />
                     </svg>
                 </button>
                 {sidebarOpen && (
@@ -91,7 +96,9 @@ export default function ResultPage() {
                                                         ·{' '}
                                                         {new Date(
                                                             c.analyzedAt,
-                                                        ).toLocaleDateString('ko-KR')}
+                                                        ).toLocaleDateString(
+                                                            'ko-KR',
+                                                        )}
                                                     </>
                                                 )}
                                             </p>
@@ -105,7 +112,7 @@ export default function ResultPage() {
             </aside>
 
             {/* 메인 — 분석 결과 */}
-            <main className="min-w-0 flex-1 pt-6 md:pl-8 md:pt-0">
+            <main className="min-w-0 flex-1 pt-6 md:pt-0 md:pl-8">
                 {loading && (
                     <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-2 text-sm text-gray-400">
