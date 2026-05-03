@@ -11,7 +11,7 @@ export default function AnalysisResultView({ result }: { result: AnalysisResult 
         try {
             localStorage.setItem('reanalyzeUrl', result.videoUrl);
         } catch {}
-        router.push('/');
+        router.push('/analyze');
     }
 
     return (
