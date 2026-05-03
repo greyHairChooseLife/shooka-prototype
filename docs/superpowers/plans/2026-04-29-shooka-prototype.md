@@ -1257,7 +1257,7 @@ git commit -m "feat: add API routes for cases, usage, and analyze SSE"
 - Create: `src/components/CaseCards.tsx`
 - Create: `src/components/Footer.tsx`
 
-- [ ] **Step 1: `src/app/layout.tsx` 수정**
+- [x] **Step 1: `src/app/layout.tsx` 수정**
 
 ```typescript
 import type { Metadata } from 'next';
@@ -1277,7 +1277,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-- [ ] **Step 2: `src/components/UsageBadge.tsx` 작성**
+- [x] **Step 2: `src/components/UsageBadge.tsx` 작성**
 
 ```typescript
 'use client';
@@ -1312,7 +1312,7 @@ export default function UsageBadge() {
 }
 ```
 
-- [ ] **Step 3: `src/components/VideoInput.tsx` 작성**
+- [x] **Step 3: `src/components/VideoInput.tsx` 작성**
 
 ```typescript
 'use client';
@@ -1393,7 +1393,7 @@ export default function VideoInput({ onEvents, onResult }: Props) {
 }
 ```
 
-- [ ] **Step 4: `src/components/ProgressStream.tsx` 작성**
+- [x] **Step 4: `src/components/ProgressStream.tsx` 작성**
 
 ```typescript
 import type { PipelineEvent } from '@/lib/types';
@@ -1432,7 +1432,7 @@ export default function ProgressStream({ events }: { events: PipelineEvent[] }) 
 }
 ```
 
-- [ ] **Step 5: `src/components/FeedbackChart.tsx` 작성**
+- [x] **Step 5: `src/components/FeedbackChart.tsx` 작성**
 
 ```typescript
 'use client';
@@ -1484,7 +1484,7 @@ export default function FeedbackChart({ data }: { data: FeedbackCategory[] }) {
 }
 ```
 
-- [ ] **Step 6: `src/components/ActionCards.tsx` 작성**
+- [x] **Step 6: `src/components/ActionCards.tsx` 작성**
 
 ```typescript
 import type { ActionItem } from '@/lib/types';
@@ -1509,7 +1509,7 @@ export default function ActionCards({ items }: { items: ActionItem[] }) {
 }
 ```
 
-- [ ] **Step 7: `src/components/AnalysisResult.tsx` 작성**
+- [x] **Step 7: `src/components/AnalysisResult.tsx` 작성**
 
 ```typescript
 import type { AnalysisResult } from '@/lib/types';
@@ -1542,7 +1542,7 @@ export default function AnalysisResultView({ result }: { result: AnalysisResult 
 }
 ```
 
-- [ ] **Step 8: `src/components/CaseCards.tsx` 작성**
+- [x] **Step 8: `src/components/CaseCards.tsx` 작성**
 
 ```typescript
 'use client';
@@ -1613,7 +1613,7 @@ export default function CaseCards({ onSelect }: Props) {
 }
 ```
 
-- [ ] **Step 9: `src/components/Footer.tsx` 작성**
+- [x] **Step 9: `src/components/Footer.tsx` 작성**
 
 ```typescript
 export default function Footer() {
@@ -1629,7 +1629,7 @@ export default function Footer() {
 }
 ```
 
-- [ ] **Step 10: `src/components/Landing.tsx` 작성**
+- [x] **Step 10: `src/components/Landing.tsx` 작성**
 
 ```typescript
 import UsageBadge from './UsageBadge';
@@ -1655,7 +1655,7 @@ export default function Landing({ onEvents, onResult }: Props) {
 }
 ```
 
-- [ ] **Step 11: `src/app/page.tsx` 작성**
+- [x] **Step 11: `src/app/page.tsx` 작성**
 
 ```typescript
 'use client';
@@ -1695,7 +1695,7 @@ export default function Page() {
 }
 ```
 
-- [ ] **Step 12: 브라우저 동작 확인**
+- [x] **Step 12: 브라우저 동작 확인**
 
 ```bash
 npm run dev
@@ -1708,7 +1708,7 @@ npm run dev
 - 다른 채널 URL 입력 → 오류 메시지 표시
 - 모바일 시뮬레이터에서 레이아웃 확인
 
-- [ ] **Step 13: 커밋**
+- [x] **Step 13: 커밋**
 
 ```bash
 git add src/app/ src/components/
