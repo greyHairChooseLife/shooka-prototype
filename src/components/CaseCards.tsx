@@ -42,6 +42,9 @@ export default function CaseCards({ onEvents, onResult }: Props) {
                                 {c.channelName === 'shookaworld' ? '슈카월드' : '머니코믹스'}
                             </p>
                             <p className="line-clamp-2 text-sm font-medium">{c.videoTitle}</p>
+                            <p className="mt-1 text-xs text-gray-500">
+                                분석: {new Date(c.analyzedAt).toLocaleDateString('ko-KR')}
+                            </p>
                         </div>
                     </button>
                 ))}

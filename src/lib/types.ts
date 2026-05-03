@@ -63,6 +63,7 @@ export type CaseMeta = {
     videoTitle: string;
     thumbnailUrl: string;
     publishedAt: string;
+    analyzedAt: string;
 };
 
 export type PipelineEvent =

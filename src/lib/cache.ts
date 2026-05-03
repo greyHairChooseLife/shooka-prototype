@@ -36,17 +36,48 @@ export function setCached(videoId: string, result: AnalysisResult): void {
 }
 
 export function listCaseMetas(): CaseMeta[] {
-    if (!fs.existsSync(CACHE_DIR)) return [];
-    const files = fs.readdirSync(CACHE_DIR).filter((f) => f.endsWith('.json'));
-    return files.map((file) => {
-        const raw = fs.readFileSync(path.join(CACHE_DIR, file), 'utf-8');
-        const result = JSON.parse(raw) as AnalysisResult;
-        return {
-            videoId: result.videoId,
-            channelName: result.channelName,
-            videoTitle: result.videoTitle,
-            thumbnailUrl: result.thumbnailUrl,
-            publishedAt: result.publishedAt,
-        };
-    });
+    const seen = new Set<string>();
+    const results: CaseMeta[] = [];
+
+    // DB (실시간 분석 결과)
+    const db = getDb();
+    const rows = db
+        .prepare('SELECT result_json FROM analysis_cache ORDER BY created_at DESC')
+        .all() as { result_json: string }[];
+    for (const row of rows) {
+        const r = JSON.parse(row.result_json) as AnalysisResult;
+        if (seen.has(r.videoId)) continue;
+        seen.add(r.videoId);
+        results.push({
+            videoId: r.videoId,
+            channelName: r.channelName,
+            videoTitle: r.videoTitle,
+            thumbnailUrl: r.thumbnailUrl,
+            publishedAt: r.publishedAt,
+            analyzedAt: r.analyzedAt,
+        });
+    }
+
+    // 파일 캐시 (사전 분석된 케이스)
+    if (fs.existsSync(CACHE_DIR)) {
+        const files = fs.readdirSync(CACHE_DIR).filter((f) => f.endsWith('.json'));
+        for (const file of files) {
+            const raw = fs.readFileSync(path.join(CACHE_DIR, file), 'utf-8');
+            const r = JSON.parse(raw) as AnalysisResult;
+            if (seen.has(r.videoId)) continue;
+            seen.add(r.videoId);
+            results.push({
+                videoId: r.videoId,
+                channelName: r.channelName,
+                videoTitle: r.videoTitle,
+                thumbnailUrl: r.thumbnailUrl,
+                publishedAt: r.publishedAt,
+                analyzedAt: r.analyzedAt,
+            });
+        }
+    }
+
+    return results.sort(
+        (a, b) => new Date(b.analyzedAt).getTime() - new Date(a.analyzedAt).getTime(),
+    );
 }

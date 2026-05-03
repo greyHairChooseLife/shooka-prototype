@@ -33,6 +33,7 @@ export async function GET() {
                 item.snippet!.thumbnails?.default?.url ||
                 '',
             publishedAt: item.snippet!.publishedAt!,
+            analyzedAt: '',
         }));
 
         cache = { data: items, expiresAt: Date.now() + TTL_MS };
