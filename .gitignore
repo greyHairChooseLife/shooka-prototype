@@ -47,3 +47,6 @@ next-env.d.ts
 data/*.db
 data/*.db-wal
 data/*.db-shm
+
+# personal documents
+public/*.pdf

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.0] - 2026-05-04
+
+### 추가
+
+- 이력서·자기소개서 PDF 링크 (`/resume.pdf`, `/cover-letter.pdf`) — `public/`에서 정적 서빙
+- `public/*.pdf` `.gitignore` 제외 처리
+
+---
+
 ## [1.5.0] - 2026-05-04
 
 ### 추가
