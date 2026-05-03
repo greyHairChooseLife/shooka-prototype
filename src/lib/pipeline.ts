@@ -146,12 +146,9 @@ export async function runPipeline(
         ),
     );
 
-    // 카테고리 점유율 순서로 정렬 (significantCategories는 이미 weightedScore 내림차순)
-    const categoryOrder = significantCategories.map((c) => c.category);
+    // categoryIndex 오름차순 정렬 — [0]이 가장 높은 점유율 카테고리
     const actionItems = [...rawActionItems].sort(
-        (a, b) =>
-            categoryOrder.indexOf(a.sourceCategory) -
-            categoryOrder.indexOf(b.sourceCategory),
+        (a, b) => (a.categoryIndex ?? 0) - (b.categoryIndex ?? 0),
     );
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
 

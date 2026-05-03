@@ -79,9 +79,12 @@
 ```json
 [
     {
+        "categoryIndex": 0,
         "title": "액션 제안 (1~2문장)",
         "rationale": "어떤 댓글 패턴에 근거한 제안인지 논리적으로 설명",
         "sourceCategory": "Topic Value"
     }
 ]
 ```
+
+categoryIndex는 위 카테고리 목록의 [번호]와 반드시 일치해야 함.

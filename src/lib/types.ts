@@ -33,6 +33,7 @@ export type ActionItem = {
     title: string;
     rationale: string;
     sourceCategory: AnalysisCategory;
+    categoryIndex: number;
 };
 
 export type AnalysisResult = {

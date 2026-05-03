@@ -9,8 +9,8 @@ export function buildActionsPrompt(
 ): string {
     const distributionStr = categoryDistribution
         .map(
-            (f) =>
-                `### ${f.category} (가중점수: ${f.weightedScore}, 댓글수: ${f.commentCount})\n대표 댓글:\n${f.sampleComments
+            (f, i) =>
+                `### [${i}] ${f.category} (가중점수: ${f.weightedScore}, 댓글수: ${f.commentCount})\n대표 댓글:\n${f.sampleComments
                     .slice(0, 3)
                     .map((c) => `- (좋아요 ${c.likeCount}) "${c.text}"`)
                     .join('\n')}`,
