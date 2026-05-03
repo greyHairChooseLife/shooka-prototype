@@ -27,6 +27,12 @@ export function getDb(): Database.Database {
             created_at INTEGER NOT NULL
         );
 
+        CREATE TABLE IF NOT EXISTS prompts (
+            name TEXT PRIMARY KEY,
+            content TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        );
+
         INSERT OR IGNORE INTO usage_counter (id, count, reset_at)
         VALUES (1, 0, ${new Date().setHours(24, 0, 0, 0)});
     `);

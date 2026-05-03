@@ -1,13 +1,6 @@
 import type { RawComment } from '@/lib/youtube';
 
-const EXPRESSION_TYPES = [
-    '칭찬형',
-    '비판형',
-    '질문형',
-    '농담·밈형',
-    '정보 보충형',
-    '기타',
-];
+const EXPRESSION_TYPES = ['비판형', '직접요청형', '농담·밈형', '기타'];
 
 export type ExpressionClassification = {
     index: number;

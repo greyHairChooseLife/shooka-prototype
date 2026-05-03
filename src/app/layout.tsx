@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Nav from '@/components/Nav';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export default function RootLayout({
     return (
         <html lang="ko">
             <body className="min-h-screen bg-gray-950 text-gray-100">
+                <Nav />
                 {children}
             </body>
         </html>

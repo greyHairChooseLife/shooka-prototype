@@ -138,16 +138,16 @@ export async function runPipeline(
         expressionClassifications,
     );
 
-    onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 중...' });
-    const actionItems = await callLLMJSON<ActionItem[]>(
-        buildActionsPrompt(meta.title, feedbackDistribution),
-    );
-    onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
-
     const channelName =
         meta.channelId === process.env.SHOOKAWORLD_CHANNEL_ID
             ? 'shookaworld'
             : 'moneycomics';
+
+    onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 중...' });
+    const actionItems = await callLLMJSON<ActionItem[]>(
+        buildActionsPrompt(meta.title, feedbackDistribution, channelName),
+    );
+    onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
 
     const result: AnalysisResult = {
         videoId,

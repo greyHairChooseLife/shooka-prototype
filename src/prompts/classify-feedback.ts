@@ -17,9 +17,7 @@ export type FeedbackClassification = {
 };
 
 export function buildFeedbackPrompt(comments: RawComment[]): string {
-    const categoriesStr = FEEDBACK_CATEGORIES.map(
-        (c, i) => `${i + 1}. ${c}`,
-    ).join('\n');
+    const categoriesStr = FEEDBACK_CATEGORIES.map((c, i) => `${i + 1}. ${c}`).join('\n');
     const commentsStr = comments
         .map((c, i) => `[${i}] (좋아요 ${c.likeCount}) ${c.text}`)
         .join('\n');
