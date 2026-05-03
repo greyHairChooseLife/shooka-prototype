@@ -43,5 +43,6 @@ yarn-error.log*
 next-env.d.ts
 
 # app data
-data/app.db
 data/*.db
+data/*.db-wal
+data/*.db-shm
