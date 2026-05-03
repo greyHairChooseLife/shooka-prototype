@@ -14,6 +14,9 @@ export default function Page() {
 
     function handleResult(r: AnalysisResult) {
         setResult(r);
+        setEvents((prev) =>
+            prev.length === 0 ? [{ stage: 'done', result: r }] : prev,
+        );
         setTimeout(
             () => resultRef.current?.scrollIntoView({ behavior: 'smooth' }),
             100,
