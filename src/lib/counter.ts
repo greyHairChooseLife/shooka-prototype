@@ -2,7 +2,12 @@ import { getDb } from '@/lib/db';
 import type { UsageStatus } from '@/lib/types';
 
 const LIMIT = parseInt(process.env.USAGE_LIMIT_PER_DAY || '15', 10);
-const DAY_MS = 24 * 60 * 60 * 1000;
+
+function nextMidnight(): number {
+    const d = new Date();
+    d.setHours(24, 0, 0, 0);
+    return d.getTime();
+}
 
 export function getUsage(): UsageStatus {
     const db = getDb();
@@ -10,10 +15,10 @@ export function getUsage(): UsageStatus {
         .prepare('SELECT count, reset_at FROM usage_counter WHERE id = 1')
         .get() as { count: number; reset_at: number } | undefined;
 
-    if (!row) return { count: 0, limit: LIMIT, resetAt: Date.now() + DAY_MS };
+    if (!row) return { count: 0, limit: LIMIT, resetAt: nextMidnight() };
 
     if (Date.now() > row.reset_at) {
-        const newResetAt = Date.now() + DAY_MS;
+        const newResetAt = nextMidnight();
         db.prepare(
             'UPDATE usage_counter SET count = 0, reset_at = ? WHERE id = 1',
         ).run(newResetAt);

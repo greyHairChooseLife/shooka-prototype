@@ -28,7 +28,7 @@ export function getDb(): Database.Database {
         );
 
         INSERT OR IGNORE INTO usage_counter (id, count, reset_at)
-        VALUES (1, 0, ${Date.now() + 24 * 60 * 60 * 1000});
+        VALUES (1, 0, ${new Date().setHours(24, 0, 0, 0)});
     `);
 
     return _db;
