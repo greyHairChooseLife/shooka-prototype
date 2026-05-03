@@ -18,7 +18,7 @@ export default function Nav() {
                         href={href}
                         className={`py-3 text-sm transition-colors ${
                             pathname === href
-                                ? 'text-gray-100 border-b-2 border-gray-100'
+                                ? 'border-b-2 border-gray-100 text-gray-100'
                                 : 'text-gray-400 hover:text-gray-100'
                         }`}
                     >

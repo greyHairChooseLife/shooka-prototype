@@ -15,7 +15,7 @@ export default function ActionCards({ items }: { items: ActionItem[] }) {
                             {item.rationale}
                         </p>
                         <span className="rounded bg-indigo-900/50 px-2 py-0.5 text-xs text-indigo-300">
-                            {item.sourceFeedback}
+                            {item.sourceCategory}
                         </span>
                     </div>
                 ))}

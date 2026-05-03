@@ -1,18 +1,13 @@
 import { getVideoMeta, fetchComments, type RawComment } from '@/lib/youtube';
 import { callLLMJSON } from '@/lib/llm';
 import {
-    buildFeedbackPrompt,
-    type FeedbackClassification,
+    buildClassifyPrompt,
+    type CommentClassification,
 } from '@/prompts/classify-feedback';
-import {
-    buildExpressionPrompt,
-    type ExpressionClassification,
-} from '@/prompts/classify-expression';
 import { buildActionsPrompt } from '@/prompts/generate-actions';
 import type {
     AnalysisResult,
     FeedbackCategory,
-    ExpressionCategory,
     ActionItem,
     PipelineEvent,
 } from '@/lib/types';
@@ -26,9 +21,9 @@ function filterComments(comments: RawComment[]): RawComment[] {
     });
 }
 
-function buildFeedbackDistribution(
+function buildCategoryDistribution(
     comments: RawComment[],
-    classifications: FeedbackClassification[],
+    classifications: CommentClassification[],
 ): FeedbackCategory[] {
     const map = new Map<
         string,
@@ -36,6 +31,7 @@ function buildFeedbackDistribution(
     >();
 
     for (const cls of classifications) {
+        if (cls.category === null) continue;
         const comment = comments[cls.index];
         if (!comment) continue;
         const existing = map.get(cls.category) || {
@@ -62,18 +58,6 @@ function buildFeedbackDistribution(
                 })),
         }))
         .sort((a, b) => b.weightedScore - a.weightedScore);
-}
-
-function buildExpressionDistribution(
-    classifications: ExpressionClassification[],
-): ExpressionCategory[] {
-    const map = new Map<string, number>();
-    for (const cls of classifications) {
-        map.set(cls.type, (map.get(cls.type) || 0) + 1);
-    }
-    return Array.from(map.entries())
-        .map(([type, count]) => ({ type, count }))
-        .sort((a, b) => b.count - a.count);
 }
 
 export async function runPipeline(
@@ -105,37 +89,16 @@ export async function runPipeline(
         message: `${comments.length}개 댓글 정제 완료`,
     });
 
-    onEvent({
-        stage: 'classifying-feedback',
-        message: '잠재 피드백 분류 중...',
-    });
-    const feedbackClassifications = await callLLMJSON<FeedbackClassification[]>(
-        buildFeedbackPrompt(comments),
+    onEvent({ stage: 'classifying-feedback', message: '댓글 분류 중...' });
+    const classifications = await callLLMJSON<CommentClassification[]>(
+        buildClassifyPrompt(comments),
     );
-    onEvent({
-        stage: 'classifying-feedback',
-        message: '잠재 피드백 분류 완료',
-    });
-
-    onEvent({
-        stage: 'classifying-expression',
-        message: '표현 방식 분류 중...',
-    });
-    const expressionClassifications = await callLLMJSON<
-        ExpressionClassification[]
-    >(buildExpressionPrompt(comments));
-    onEvent({
-        stage: 'classifying-expression',
-        message: '표현 방식 분류 완료',
-    });
+    onEvent({ stage: 'classifying-feedback', message: '댓글 분류 완료' });
 
     onEvent({ stage: 'aggregating', message: '결과 집계 중...' });
-    const feedbackDistribution = buildFeedbackDistribution(
+    const categoryDistribution = buildCategoryDistribution(
         comments,
-        feedbackClassifications,
-    );
-    const expressionDistribution = buildExpressionDistribution(
-        expressionClassifications,
+        classifications,
     );
 
     const channelName =
@@ -145,7 +108,7 @@ export async function runPipeline(
 
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 중...' });
     const actionItems = await callLLMJSON<ActionItem[]>(
-        buildActionsPrompt(meta.title, feedbackDistribution, channelName),
+        buildActionsPrompt(meta.title, categoryDistribution, channelName),
     );
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
 
@@ -159,8 +122,7 @@ export async function runPipeline(
         thumbnailUrl: meta.thumbnailUrl,
         analyzedAt: new Date().toISOString(),
         commentCount: comments.length,
-        feedbackDistribution,
-        expressionDistribution,
+        categoryDistribution,
         actionItems,
     };
 

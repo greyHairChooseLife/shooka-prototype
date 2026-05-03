@@ -38,7 +38,7 @@ export default function AnalysisResultView({
                 </div>
             </div>
 
-            <FeedbackChart data={result.feedbackDistribution} />
+            <FeedbackChart data={result.categoryDistribution} />
             <ActionCards items={result.actionItems} />
         </div>
     );

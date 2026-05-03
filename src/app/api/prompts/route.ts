@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server';
-import {
-    PROMPT_NAMES,
-    getPrompt,
-    isCustomized,
-} from '@/lib/prompt-store';
+import { PROMPT_NAMES, getPrompt, isCustomized } from '@/lib/prompt-store';
 
 export async function GET() {
     const prompts = PROMPT_NAMES.map((name) => ({

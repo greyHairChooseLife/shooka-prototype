@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { savePrompt, resetPrompt, type PromptName, PROMPT_NAMES } from '@/lib/prompt-store';
+import {
+    savePrompt,
+    resetPrompt,
+    type PromptName,
+    PROMPT_NAMES,
+} from '@/lib/prompt-store';
 
 type Params = { params: Promise<{ name: string }> };
 
@@ -14,7 +19,10 @@ export async function PUT(req: Request, { params }: Params) {
     }
     const { content } = await req.json();
     if (typeof content !== 'string' || !content.trim()) {
-        return NextResponse.json({ error: 'content required' }, { status: 400 });
+        return NextResponse.json(
+            { error: 'content required' },
+            { status: 400 },
+        );
     }
     savePrompt(name, content);
     return NextResponse.json({ ok: true });

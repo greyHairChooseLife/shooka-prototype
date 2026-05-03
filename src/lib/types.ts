@@ -6,6 +6,15 @@ export type SampleComment = {
     author: string;
 };
 
+export const ANALYSIS_CATEGORIES = [
+    'Topic Value',
+    'Expertise & Correction',
+    'Future Demand',
+    'Viewer Identity',
+] as const;
+
+export type AnalysisCategory = (typeof ANALYSIS_CATEGORIES)[number];
+
 export type FeedbackCategory = {
     category: string;
     weightedScore: number;
@@ -13,15 +22,10 @@ export type FeedbackCategory = {
     sampleComments: SampleComment[];
 };
 
-export type ExpressionCategory = {
-    type: string;
-    count: number;
-};
-
 export type ActionItem = {
     title: string;
     rationale: string;
-    sourceFeedback: string;
+    sourceCategory: AnalysisCategory;
 };
 
 export type AnalysisResult = {
@@ -34,8 +38,7 @@ export type AnalysisResult = {
     thumbnailUrl: string;
     analyzedAt: string;
     commentCount: number;
-    feedbackDistribution: FeedbackCategory[];
-    expressionDistribution: ExpressionCategory[];
+    categoryDistribution: FeedbackCategory[];
     actionItems: ActionItem[];
 };
 
@@ -57,7 +60,6 @@ export type PipelineEvent =
     | { stage: 'collecting'; message: string }
     | { stage: 'filtering'; message: string }
     | { stage: 'classifying-feedback'; message: string }
-    | { stage: 'classifying-expression'; message: string }
     | { stage: 'aggregating'; message: string }
     | { stage: 'generating-actions'; message: string }
     | { stage: 'done'; result: AnalysisResult }

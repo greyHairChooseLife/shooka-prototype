@@ -3,21 +3,20 @@ import { getPrompt, actionsPromptName } from '@/lib/prompt-store';
 
 export function buildActionsPrompt(
     videoTitle: string,
-    feedbackDistribution: FeedbackCategory[],
+    categoryDistribution: FeedbackCategory[],
     channel: ChannelName,
 ): string {
-    const feedbackStr = feedbackDistribution
-        .slice(0, 6)
+    const distributionStr = categoryDistribution
         .map(
             (f) =>
-                `- ${f.category} (가중점수: ${f.weightedScore}, 댓글수: ${f.commentCount})\n  대표 댓글: ${f.sampleComments
-                    .slice(0, 2)
-                    .map((c) => `"${c.text}"`)
-                    .join(', ')}`,
+                `### ${f.category} (가중점수: ${f.weightedScore}, 댓글수: ${f.commentCount})\n대표 댓글:\n${f.sampleComments
+                    .slice(0, 3)
+                    .map((c) => `- (좋아요 ${c.likeCount}) "${c.text}"`)
+                    .join('\n')}`,
         )
-        .join('\n');
+        .join('\n\n');
 
     return getPrompt(actionsPromptName(channel))
         .replace('{{videoTitle}}', videoTitle)
-        .replace('{{feedbackDistribution}}', feedbackStr);
+        .replace('{{categoryDistribution}}', distributionStr);
 }

@@ -1,41 +1,42 @@
 import type { RawComment } from '@/lib/youtube';
+import { ANALYSIS_CATEGORIES } from '@/lib/types';
 
-const FEEDBACK_CATEGORIES = [
-    '콘텐츠 길이',
-    '주제 깊이',
-    '주제 다양성',
-    '사실 정확성',
-    '출연자 구성',
-    '영상 구성',
-    '시의성',
-    '기타',
-];
-
-export type FeedbackClassification = {
+export type CommentClassification = {
     index: number;
-    category: string;
+    category: string | null;
 };
 
-export function buildFeedbackPrompt(comments: RawComment[]): string {
-    const categoriesStr = FEEDBACK_CATEGORIES.map((c, i) => `${i + 1}. ${c}`).join('\n');
+export function buildClassifyPrompt(comments: RawComment[]): string {
+    const categoriesStr = ANALYSIS_CATEGORIES.map(
+        (c, i) => `${i + 1}. ${c}`,
+    ).join('\n');
     const commentsStr = comments
         .map((c, i) => `[${i}] (좋아요 ${c.likeCount}) ${c.text}`)
         .join('\n');
 
-    return `당신은 YouTube 댓글 분류 전문가입니다. 아래 댓글들을 잠재 피드백 카테고리로 분류하세요.
+    return `당신은 YouTube 댓글 분류 전문가입니다. 아래 댓글들을 4가지 카테고리로 분류하세요.
 
 ## 카테고리
 ${categoriesStr}
 
-## 댓글 (인덱스: 텍스트)
+## 분류 기준
+1. Topic Value — 주제/내용에 대한 만족 또는 불만 반응
+2. Expertise & Correction — 전문 지식 보완 또는 사실 오류 지적
+3. Future Demand — 다음에 보고 싶은 주제나 기능 직·간접 요청
+4. Viewer Identity — 자신의 상황을 대입하거나 감정을 토로하는 댓글
+
+## 제외 기준 (null 처리)
+- "ㅋㅋ", "ㄷㄷ", "응원합니다", "감사해요" 등 단순 리액션·감탄사
+- 의미 없는 단발 이모지
+
+## 댓글
 ${commentsStr}
 
 ## 지시사항
-- 각 댓글을 위 카테고리 중 하나로 분류
-- 카테고리가 명확히 맞지 않으면 "기타"
+- 각 댓글을 위 카테고리 중 하나로 분류하거나, 제외 기준에 해당하면 null
 - JSON 배열로만 응답 (다른 텍스트 없이)
 
 \`\`\`json
-[{"index": 0, "category": "카테고리명"}, ...]
+[{"index": 0, "category": "Topic Value"}, {"index": 1, "category": null}, ...]
 \`\`\``;
 }

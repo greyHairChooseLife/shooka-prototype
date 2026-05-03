@@ -16,7 +16,7 @@ export default function FeedbackChart({ data }: { data: FeedbackCategory[] }) {
 
     return (
         <div>
-            <h3 className="mb-4 text-lg font-semibold">잠재 피드백 분포</h3>
+            <h3 className="mb-4 text-lg font-semibold">댓글 카테고리 분포</h3>
             <ResponsiveContainer width="100%" height={280}>
                 <BarChart
                     data={data}

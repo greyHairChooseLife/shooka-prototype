@@ -1,7 +1,9 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 
-type PromptName = 'generate-actions-shookaworld' | 'generate-actions-moneycomics';
+type PromptName =
+    | 'generate-actions-shookaworld'
+    | 'generate-actions-moneycomics';
 
 type PromptEntry = {
     name: PromptName;
@@ -16,7 +18,9 @@ const LABELS: Record<PromptName, string> = {
 
 export default function PromptsPage() {
     const [prompts, setPrompts] = useState<PromptEntry[]>([]);
-    const [selected, setSelected] = useState<PromptName>('generate-actions-shookaworld');
+    const [selected, setSelected] = useState<PromptName>(
+        'generate-actions-shookaworld',
+    );
     const [draft, setDraft] = useState('');
     const [dirty, setDirty] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -51,7 +55,11 @@ export default function PromptsPage() {
 
     const handleTabChange = useCallback(
         (name: PromptName) => {
-            if (dirty && !confirm('저장하지 않은 변경사항이 있습니다. 이동하시겠습니까?')) return;
+            if (
+                dirty &&
+                !confirm('저장하지 않은 변경사항이 있습니다. 이동하시겠습니까?')
+            )
+                return;
             setSelected(name);
         },
         [dirty],
@@ -66,7 +74,9 @@ export default function PromptsPage() {
         });
         setPrompts((prev) =>
             prev.map((p) =>
-                p.name === selected ? { ...p, content: draft, customized: true } : p,
+                p.name === selected
+                    ? { ...p, content: draft, customized: true }
+                    : p,
             ),
         );
         setDirty(false);
@@ -93,17 +103,22 @@ export default function PromptsPage() {
             <h1 className="mb-2 text-2xl font-bold">프롬프트 관리</h1>
             <p className="mb-8 text-sm text-gray-500">
                 채널별 액션 아이템 생성 프롬프트를 편집합니다.
-                <code className="ml-1 rounded bg-gray-100 dark:bg-gray-800 px-1">{'{{videoTitle}}'}</code>와{' '}
-                <code className="rounded bg-gray-100 dark:bg-gray-800 px-1">{'{{feedbackDistribution}}'}</code>는
-                분석 시 자동으로 채워집니다.
+                <code className="ml-1 rounded bg-gray-100 px-1 dark:bg-gray-800">
+                    {'{{videoTitle}}'}
+                </code>
+                와{' '}
+                <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">
+                    {'{{categoryDistribution}}'}
+                </code>
+                는 분석 시 자동으로 채워집니다.
             </p>
 
-            <div className="flex gap-2 border-b border-gray-200 dark:border-gray-700 mb-6">
+            <div className="mb-6 flex gap-2 border-b border-gray-200 dark:border-gray-700">
                 {prompts.map((p) => (
                     <button
                         key={p.name}
                         onClick={() => handleTabChange(p.name)}
-                        className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                        className={`border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
                             selected === p.name
                                 ? 'border-blue-500 text-blue-600 dark:text-blue-400'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
@@ -111,7 +126,9 @@ export default function PromptsPage() {
                     >
                         {LABELS[p.name]}
                         {p.customized && (
-                            <span className="ml-1.5 text-xs text-orange-500">수정됨</span>
+                            <span className="ml-1.5 text-xs text-orange-500">
+                                수정됨
+                            </span>
                         )}
                     </button>
                 ))}
@@ -123,7 +140,7 @@ export default function PromptsPage() {
                     setDraft(e.target.value);
                     setDirty(true);
                 }}
-                className="w-full h-[32rem] rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 p-4 font-mono text-sm resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="h-[32rem] w-full resize-y rounded-lg border border-gray-300 bg-white p-4 font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-gray-600 dark:bg-gray-900"
                 spellCheck={false}
             />
 
@@ -131,14 +148,14 @@ export default function PromptsPage() {
                 <button
                     onClick={handleSave}
                     disabled={!dirty || saving}
-                    className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium disabled:opacity-40 hover:bg-blue-700 transition-colors"
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-40"
                 >
                     {saving ? '저장 중...' : '저장'}
                 </button>
                 {current?.customized && (
                     <button
                         onClick={handleReset}
-                        className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                        className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800"
                     >
                         기본값으로 리셋
                     </button>

@@ -4,13 +4,16 @@ import type { PipelineEvent } from '@/lib/types';
 const STAGES = [
     { key: 'collecting', label: '댓글 수집' },
     { key: 'filtering', label: '댓글 정제' },
-    { key: 'classifying-feedback', label: '피드백 분류' },
-    { key: 'classifying-expression', label: '표현 방식 분류' },
+    { key: 'classifying-feedback', label: '댓글 분류' },
     { key: 'aggregating', label: '집계' },
     { key: 'generating-actions', label: '액션 아이템 생성' },
 ] as const;
 
-export default function ProgressStream({ events }: { events: PipelineEvent[] }) {
+export default function ProgressStream({
+    events,
+}: {
+    events: PipelineEvent[];
+}) {
     if (!events.length) return null;
 
     const lastEvent = events[events.length - 1];
