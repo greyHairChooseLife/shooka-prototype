@@ -114,9 +114,9 @@ export async function runPipeline(
     onEvent({ stage: 'summarizing', message: '영상 요약 완료' });
 
     onEvent({ stage: 'classifying-feedback', message: '댓글 분류 중...' });
-    const rawClassifications = await callLLMJSON<{ index: number; category: number | null }[]>(
-        buildClassifyPrompt(comments, videoSummary),
-    );
+    const rawClassifications = await callLLMJSON<
+        { index: number; category: number | null }[]
+    >(buildClassifyPrompt(comments, videoSummary));
     const classifications = parseClassifications(rawClassifications);
     onEvent({ stage: 'classifying-feedback', message: '댓글 분류 완료' });
 
@@ -158,7 +158,11 @@ export async function runPipeline(
     );
 
     const actionItems = [...rawActionItems]
-        .filter((item) => Array.isArray(item.sourceCommentIndices) && item.sourceCommentIndices.length > 0)
+        .filter(
+            (item) =>
+                Array.isArray(item.sourceCommentIndices) &&
+                item.sourceCommentIndices.length > 0,
+        )
         .sort((a, b) => {
             const scoreA = scoreMap.get(a.sourceCategory) ?? 0;
             const scoreB = scoreMap.get(b.sourceCategory) ?? 0;

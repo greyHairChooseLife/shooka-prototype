@@ -22,7 +22,9 @@ export default function ActionCards({ items, categoryDistribution }: Props) {
     const visibleItems = items.filter((item) => {
         const cat = categoryMap.get(item.sourceCategory);
         if (!cat) return false;
-        return item.sourceCommentIndices.some((idx) => cat.sampleComments[idx] !== undefined);
+        return item.sourceCommentIndices.some(
+            (idx) => cat.sampleComments[idx] !== undefined,
+        );
     });
 
     if (!visibleItems.length) return null;
@@ -47,8 +49,12 @@ export default function ActionCards({ items, categoryDistribution }: Props) {
                                 className="w-full p-4 text-left"
                                 onClick={() => setExpanded(isOpen ? null : i)}
                             >
-                                <p className="text-sm font-medium">{item.title}</p>
-                                <p className="mt-1 text-xs text-gray-400">{item.rationale}</p>
+                                <p className="text-sm font-medium">
+                                    {item.title}
+                                </p>
+                                <p className="mt-1 text-xs text-gray-400">
+                                    {item.rationale}
+                                </p>
                                 <div className="mt-2 flex items-center gap-2">
                                     <span className="rounded bg-indigo-900/50 px-2 py-0.5 text-xs text-indigo-300">
                                         {item.sourceCategory}

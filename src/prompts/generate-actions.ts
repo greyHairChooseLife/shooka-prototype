@@ -1,4 +1,8 @@
-import type { FeedbackCategory, ChannelName, AnalysisCategory } from '@/lib/types';
+import type {
+    FeedbackCategory,
+    ChannelName,
+    AnalysisCategory,
+} from '@/lib/types';
 import { CATEGORY_LABELS } from '@/lib/types';
 import { getPrompt, actionsPromptName } from '@/lib/prompt-store';
 
@@ -10,7 +14,8 @@ export function buildActionsPrompt(
 ): string {
     const distributionStr = categoryDistribution
         .map((f) => {
-            const label = CATEGORY_LABELS[f.category as AnalysisCategory] ?? f.category;
+            const label =
+                CATEGORY_LABELS[f.category as AnalysisCategory] ?? f.category;
             const commentsStr = f.sampleComments
                 .slice(0, 5)
                 .map((c, i) => `  [${i}] (좋아요 ${c.likeCount}) "${c.text}"`)

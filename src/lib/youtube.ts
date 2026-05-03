@@ -45,8 +45,13 @@ export async function getVideoMeta(videoId: string): Promise<VideoMeta> {
     if (!item) throw new Error(`Video not found: ${videoId}`);
 
     const snippet = item.snippet!;
-    if (snippet.liveBroadcastContent === 'live' || snippet.liveBroadcastContent === 'upcoming') {
-        throw new Error('라이브 방송 중이거나 예정된 영상은 분석할 수 없습니다.');
+    if (
+        snippet.liveBroadcastContent === 'live' ||
+        snippet.liveBroadcastContent === 'upcoming'
+    ) {
+        throw new Error(
+            '라이브 방송 중이거나 예정된 영상은 분석할 수 없습니다.',
+        );
     }
 
     return {

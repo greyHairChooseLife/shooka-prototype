@@ -66,11 +66,15 @@ ${commentsStr}
 \`\`\``;
 }
 
-export function parseClassifications(raw: RawClassification[]): CommentClassification[] {
+export function parseClassifications(
+    raw: RawClassification[],
+): CommentClassification[] {
     return raw.map((r) => ({
         index: r.index,
         category:
-            r.category !== null && r.category >= 1 && r.category <= ANALYSIS_CATEGORIES.length
+            r.category !== null &&
+            r.category >= 1 &&
+            r.category <= ANALYSIS_CATEGORIES.length
                 ? ANALYSIS_CATEGORIES[r.category - 1]
                 : null,
     }));

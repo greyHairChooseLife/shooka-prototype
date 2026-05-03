@@ -31,21 +31,25 @@ async function buildCache(channelId: string, channelSlug: string, count = 2) {
     for (const videoId of videoIds) {
         console.log(`  Processing ${videoId}...`);
         const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
-        const result = await runPipeline(videoUrl, (event) => {
-            console.log(
-                `    [${event.stage}]`,
-                'message' in event ? event.message : '완료',
-            );
-        });
+        try {
+            const result = await runPipeline(videoUrl, (event) => {
+                console.log(
+                    `    [${event.stage}]`,
+                    'message' in event ? event.message : '완료',
+                );
+            });
 
-        const outPath = path.join(
-            process.cwd(),
-            'data',
-            'cache',
-            `${channelSlug}-${videoId}.json`,
-        );
-        fs.writeFileSync(outPath, JSON.stringify(result, null, 2));
-        console.log(`  Saved: ${outPath}`);
+            const outPath = path.join(
+                process.cwd(),
+                'data',
+                'cache',
+                `${channelSlug}-${videoId}.json`,
+            );
+            fs.writeFileSync(outPath, JSON.stringify(result, null, 2));
+            console.log(`  Saved: ${outPath}`);
+        } catch (err) {
+            console.log(`  Skipped ${videoId}: ${(err as Error).message}`);
+        }
     }
 }
 
