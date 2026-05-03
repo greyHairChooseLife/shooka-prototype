@@ -22,7 +22,7 @@ export default function AnalysisResultView({
                         rel="noopener noreferrer"
                         className="text-lg font-semibold hover:underline"
                     >
-                        {result.videoTitle}
+                        {result.videoTitle}(보러가기)
                     </a>
                     <p className="mt-1 text-sm text-gray-400">
                         {result.channelName === 'shookaworld'
@@ -42,6 +42,17 @@ export default function AnalysisResultView({
                     </p>
                 </div>
             </div>
+
+            {result.videoSummary && (
+                <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+                    <p className="mb-1 text-xs font-medium text-gray-400">
+                        영상 요약
+                    </p>
+                    <p className="text-sm leading-relaxed text-gray-300">
+                        {result.videoSummary}
+                    </p>
+                </div>
+            )}
 
             <FeedbackChart data={result.categoryDistribution} />
             <ActionCards
