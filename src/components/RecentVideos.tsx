@@ -8,40 +8,40 @@ type Props = {
     onResult: (result: AnalysisResult) => void;
 };
 
-export default function CaseCards({ onEvents, onResult }: Props) {
-    const [cases, setCases] = useState<CaseMeta[]>([]);
+export default function RecentVideos({ onEvents, onResult }: Props) {
+    const [videos, setVideos] = useState<CaseMeta[]>([]);
     const { analyze, loading } = useAnalyze(onEvents, onResult);
 
     useEffect(() => {
-        fetch('/api/cases')
+        fetch('/api/recent')
             .then((r) => r.json())
-            .then(setCases)
+            .then(setVideos)
             .catch(() => null);
     }, []);
 
-    if (!cases.length) return null;
+    if (!videos.length) return null;
 
     return (
         <div>
-            <h2 className="mb-4 text-xl font-semibold">이미 분석된 영상</h2>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {cases.map((c) => (
+            <h2 className="mb-4 text-xl font-semibold">슈카월드 최근 영상</h2>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+                {videos.map((v) => (
                     <button
-                        key={c.videoId}
-                        onClick={() => analyze(`https://www.youtube.com/watch?v=${c.videoId}`)}
+                        key={v.videoId}
+                        onClick={() => analyze(`https://www.youtube.com/watch?v=${v.videoId}`)}
                         disabled={loading}
                         className="overflow-hidden rounded-lg bg-gray-800 text-left transition-colors hover:bg-gray-700 disabled:opacity-50"
                     >
                         <img
-                            src={c.thumbnailUrl}
-                            alt={c.videoTitle}
+                            src={v.thumbnailUrl}
+                            alt={v.videoTitle}
                             className="aspect-video w-full object-cover"
                         />
                         <div className="p-3">
-                            <p className="mb-1 text-xs text-indigo-400">
-                                {c.channelName === 'shookaworld' ? '슈카월드' : '머니코믹스'}
+                            <p className="line-clamp-2 text-sm font-medium">{v.videoTitle}</p>
+                            <p className="mt-1 text-xs text-gray-500">
+                                {new Date(v.publishedAt).toLocaleDateString('ko-KR')}
                             </p>
-                            <p className="line-clamp-2 text-sm font-medium">{c.videoTitle}</p>
                         </div>
                     </button>
                 ))}

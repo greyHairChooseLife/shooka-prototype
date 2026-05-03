@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import type { PipelineEvent, AnalysisResult } from '@/lib/types';
+import { useAnalyze } from '@/hooks/useAnalyze';
 
 type Props = {
     onEvents: (events: PipelineEvent[]) => void;
@@ -9,49 +10,12 @@ type Props = {
 
 export default function VideoInput({ onEvents, onResult }: Props) {
     const [url, setUrl] = useState('');
-    const [loading, setLoading] = useState(false);
+    const { analyze, loading } = useAnalyze(onEvents, onResult);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        if (!url.trim() || loading) return;
-
-        setLoading(true);
-        onEvents([]);
-
-        const res = await fetch('/api/analyze', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ videoUrl: url }),
-        });
-
-        const reader = res.body!.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-        const accumulated: PipelineEvent[] = [];
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            buffer += decoder.decode(value, { stream: true });
-
-            const lines = buffer.split('\n\n');
-            buffer = lines.pop() || '';
-
-            for (const chunk of lines) {
-                const dataLine = chunk.replace(/^data: /, '');
-                if (!dataLine) continue;
-                try {
-                    const event = JSON.parse(dataLine) as PipelineEvent;
-                    accumulated.push(event);
-                    onEvents([...accumulated]);
-                    if (event.stage === 'done') onResult(event.result);
-                } catch {
-                    // 파싱 실패 무시
-                }
-            }
-        }
-
-        setLoading(false);
+        if (!url.trim()) return;
+        await analyze(url.trim());
     }
 
     return (
