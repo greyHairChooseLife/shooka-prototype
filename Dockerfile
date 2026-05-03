@@ -15,6 +15,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 RUN addgroup --system nodejs && adduser --system --ingroup nodejs nextjs
+RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
