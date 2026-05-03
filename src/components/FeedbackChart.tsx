@@ -30,9 +30,14 @@ export default function FeedbackChart({ data }: { data: FeedbackCategory[] }) {
     return (
         <div>
             <h3 className="mb-1 text-lg font-semibold">댓글 카테고리 분포</h3>
-            <p className="mb-4 text-xs text-gray-500">value 축: 좋아요 수 누적 가중 점수</p>
+            <p className="mb-4 text-xs text-gray-500">
+                value 축: 좋아요 수 누적 가중 점수
+            </p>
             <ResponsiveContainer width="100%" height={240}>
-                <BarChart data={chartData} margin={{ top: 16, right: 24, left: 8, bottom: 0 }}>
+                <BarChart
+                    data={chartData}
+                    margin={{ top: 16, right: 24, left: 8, bottom: 0 }}
+                >
                     <XAxis dataKey="label" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 11 }} />
                     <Tooltip
@@ -51,7 +56,9 @@ export default function FeedbackChart({ data }: { data: FeedbackCategory[] }) {
                         radius={[4, 4, 0, 0]}
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onClick={(d: any) =>
-                            setExpanded(d.category === expanded ? null : d.category)
+                            setExpanded(
+                                d.category === expanded ? null : d.category,
+                            )
                         }
                         cursor="pointer"
                     >
@@ -65,7 +72,11 @@ export default function FeedbackChart({ data }: { data: FeedbackCategory[] }) {
                         {chartData.map((entry) => (
                             <Cell
                                 key={entry.category}
-                                fill={entry.category === expanded ? '#3b82f6' : '#6366f1'}
+                                fill={
+                                    entry.category === expanded
+                                        ? '#3b82f6'
+                                        : '#6366f1'
+                                }
                             />
                         ))}
                     </Bar>

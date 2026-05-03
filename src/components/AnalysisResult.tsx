@@ -29,7 +29,9 @@ export default function AnalysisResultView({
                             ? '슈카월드'
                             : '머니코믹스'}{' '}
                         ·{' '}
-                        {new Date(result.publishedAt).toLocaleDateString('ko-KR')}
+                        {new Date(result.publishedAt).toLocaleDateString(
+                            'ko-KR',
+                        )}
                     </p>
                     <p className="text-sm text-gray-400">
                         댓글 {result.commentCount}개 분석

@@ -93,13 +93,13 @@ export async function fetchComments(videoId: string): Promise<RawComment[]> {
 
     const sorted = [...allComments].sort((a, b) => b.likeCount - a.likeCount);
 
-    const top100 = sorted.slice(0, 100);
+    const top50 = sorted.slice(0, 50);
 
-    const top100Texts = new Set(top100.map((c) => c.text));
-    const rest = allComments.filter((c) => !top100Texts.has(c.text));
-    const shuffled = rest.sort(() => Math.random() - 0.5).slice(0, 100);
+    const top50Texts = new Set(top50.map((c) => c.text));
+    const rest = allComments.filter((c) => !top50Texts.has(c.text));
+    const shuffled = rest.sort(() => Math.random() - 0.5).slice(0, 150);
 
-    return [...top100, ...shuffled];
+    return [...top50, ...shuffled];
 }
 
 // 자막이 없으면 null 반환

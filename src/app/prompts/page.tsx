@@ -103,10 +103,18 @@ export default function PromptsPage() {
             <h1 className="mb-2 text-2xl font-bold">프롬프트 관리</h1>
             <p className="mb-8 text-sm text-gray-500">
                 채널별 액션 아이템 생성 프롬프트를 편집합니다.
-                <code className="ml-1 rounded bg-gray-100 px-1 dark:bg-gray-800">{'{{videoTitle}}'}</code>,{' '}
-                <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">{'{{videoSummary}}'}</code>,{' '}
-                <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">{'{{categoryDistribution}}'}</code>는
-                분석 시 자동으로 채워집니다.
+                <code className="ml-1 rounded bg-gray-100 px-1 dark:bg-gray-800">
+                    {'{{videoTitle}}'}
+                </code>
+                ,{' '}
+                <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">
+                    {'{{videoSummary}}'}
+                </code>
+                ,{' '}
+                <code className="rounded bg-gray-100 px-1 dark:bg-gray-800">
+                    {'{{categoryDistribution}}'}
+                </code>
+                는 분석 시 자동으로 채워집니다.
             </p>
 
             <div className="mb-6 flex gap-2 border-b border-gray-200 dark:border-gray-700">

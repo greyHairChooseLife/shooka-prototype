@@ -6,7 +6,10 @@ export type CommentClassification = {
     category: string | null;
 };
 
-export function buildClassifyPrompt(comments: RawComment[], videoSummary: string): string {
+export function buildClassifyPrompt(
+    comments: RawComment[],
+    videoSummary: string,
+): string {
     const categoriesStr = ANALYSIS_CATEGORIES.map(
         (c, i) => `${i + 1}. ${c}`,
     ).join('\n');

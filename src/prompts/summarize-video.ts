@@ -4,7 +4,11 @@ type SummarizeInput = {
     transcript: string | null;
 };
 
-export function buildSummarizePrompt({ title, description, transcript }: SummarizeInput): string {
+export function buildSummarizePrompt({
+    title,
+    description,
+    transcript,
+}: SummarizeInput): string {
     const transcriptSection = transcript
         ? `\n## 자막 (일부)\n${transcript}`
         : '';

@@ -17,7 +17,10 @@ export default function ResultPage() {
         return (
             <div className="mx-auto max-w-3xl px-4 py-24 text-center text-gray-500">
                 <p>아직 분석 결과가 없습니다.</p>
-                <a href="/" className="mt-4 inline-block text-sm text-blue-400 hover:underline">
+                <a
+                    href="/"
+                    className="mt-4 inline-block text-sm text-blue-400 hover:underline"
+                >
                     분석 페이지로 이동
                 </a>
             </div>
