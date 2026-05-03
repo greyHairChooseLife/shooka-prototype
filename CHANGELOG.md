@@ -3,6 +3,7 @@
 ## [1.1.0] - 2026-05-03
 
 ### 변경
+
 - 댓글 분석 방법론 전면 개편: 기존 잠재피드백/표현방식 이중 분류 → 4개 카테고리 단일 분류
     - **Topic Value** — 주제·내용 만족도 반응
     - **Expertise & Correction** — 전문 지식 보완 및 사실 오류 지적
@@ -14,6 +15,7 @@
 - `feedbackDistribution` → `categoryDistribution`, `sourceFeedback` → `sourceCategory` 필드명 변경
 
 ### 제거
+
 - 표현 방식 분류 단계 (classify-expression) 제거
 
 ---
