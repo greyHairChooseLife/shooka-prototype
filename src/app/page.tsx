@@ -4,7 +4,6 @@ import Landing from '@/components/Landing';
 import ProgressStream from '@/components/ProgressStream';
 import AnalysisResultView from '@/components/AnalysisResult';
 import RecentVideos from '@/components/RecentVideos';
-import CaseCards from '@/components/CaseCards';
 import Footer from '@/components/Footer';
 import type { PipelineEvent, AnalysisResult } from '@/lib/types';
 
@@ -39,7 +38,6 @@ export default function Page() {
             )}
 
             <RecentVideos onEvents={setEvents} onResult={handleResult} />
-            <CaseCards onEvents={setEvents} onResult={handleResult} />
             <Footer />
         </div>
     );
