@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import Landing from '@/components/Landing';
 import ProgressStream from '@/components/ProgressStream';
 import RecentVideos from '@/components/RecentVideos';
-import Footer from '@/components/Footer';
 import { useAnalyze } from '@/hooks/useAnalyze';
 import type { PipelineEvent, AnalysisResult } from '@/lib/types';
 
@@ -30,7 +29,7 @@ export default function Page() {
                 analyze(url, true);
             }
         } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -44,7 +43,6 @@ export default function Page() {
             )}
 
             <RecentVideos onEvents={setEvents} onResult={handleResult} />
-            <Footer />
         </div>
     );
 }

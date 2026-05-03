@@ -20,7 +20,7 @@ export default function Nav() {
                         <Link
                             key={href}
                             href={href}
-                            className={`relative py-3 px-3 text-sm transition-colors ${
+                            className={`relative px-3 py-3 text-sm transition-colors ${
                                 isActive
                                     ? 'border-b-2 border-gray-100 text-gray-100'
                                     : highlight
@@ -28,9 +28,6 @@ export default function Nav() {
                                       : 'text-gray-400 hover:text-gray-100'
                             }`}
                         >
-                            {highlight && !isActive && (
-                                <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-indigo-400 align-middle" />
-                            )}
                             {label}
                         </Link>
                     );
