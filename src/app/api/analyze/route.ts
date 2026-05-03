@@ -6,7 +6,7 @@ import { consumeUsage } from '@/lib/counter';
 import { runPipeline } from '@/lib/pipeline';
 import type { PipelineEvent } from '@/lib/types';
 
-const schema = z.object({ videoUrl: z.string().url() });
+const schema = z.object({ videoUrl: z.string().url(), force: z.boolean().optional() });
 
 const ALLOWED_CHANNELS = [
     process.env.SHOOKAWORLD_CHANNEL_ID,
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         });
     }
 
-    const { videoUrl } = parsed.data;
+    const { videoUrl, force } = parsed.data;
     const videoId = extractVideoId(videoUrl);
     if (!videoId) {
         return new Response(
@@ -44,10 +44,12 @@ export async function POST(req: NextRequest) {
             };
 
             try {
-                const cached = getCached(videoId);
-                if (cached) {
-                    send({ stage: 'done', result: cached });
-                    return;
+                if (!force) {
+                    const cached = getCached(videoId);
+                    if (cached) {
+                        send({ stage: 'done', result: cached });
+                        return;
+                    }
                 }
 
                 const allowed = consumeUsage();

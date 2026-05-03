@@ -8,7 +8,7 @@ export function useAnalyze(
 ) {
     const [loading, setLoading] = useState(false);
 
-    async function analyze(videoUrl: string) {
+    async function analyze(videoUrl: string, force = false) {
         if (loading) return;
         setLoading(true);
         onEvents([]);
@@ -16,7 +16,7 @@ export function useAnalyze(
         const res = await fetch('/api/analyze', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ videoUrl }),
+            body: JSON.stringify({ videoUrl, force }),
         });
 
         const reader = res.body!.getReader();
