@@ -28,7 +28,11 @@ export default function RecentVideos({ onEvents, onResult }: Props) {
                 {videos.map((v) => (
                     <button
                         key={v.videoId}
-                        onClick={() => analyze(`https://www.youtube.com/watch?v=${v.videoId}`)}
+                        onClick={() =>
+                            analyze(
+                                `https://www.youtube.com/watch?v=${v.videoId}`,
+                            )
+                        }
                         disabled={loading}
                         className="overflow-hidden rounded-lg bg-gray-800 text-left transition-colors hover:bg-gray-700 disabled:opacity-50"
                     >
@@ -38,9 +42,13 @@ export default function RecentVideos({ onEvents, onResult }: Props) {
                             className="aspect-video w-full object-cover"
                         />
                         <div className="p-3">
-                            <p className="line-clamp-2 text-sm font-medium">{v.videoTitle}</p>
+                            <p className="line-clamp-2 text-sm font-medium">
+                                {v.videoTitle}
+                            </p>
                             <p className="mt-1 text-xs text-gray-500">
-                                {new Date(v.publishedAt).toLocaleDateString('ko-KR')}
+                                {new Date(v.publishedAt).toLocaleDateString(
+                                    'ko-KR',
+                                )}
                             </p>
                         </div>
                     </button>

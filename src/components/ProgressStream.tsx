@@ -10,7 +10,11 @@ const STAGES = [
     { key: 'generating-actions', label: '액션 아이템 생성' },
 ] as const;
 
-export default function ProgressStream({ events }: { events: PipelineEvent[] }) {
+export default function ProgressStream({
+    events,
+}: {
+    events: PipelineEvent[];
+}) {
     if (!events.length) return null;
 
     const lastEvent = events[events.length - 1];
@@ -83,7 +87,9 @@ export default function ProgressStream({ events }: { events: PipelineEvent[] }) 
                                     {stage.label}
                                 </span>
                                 {message && (
-                                    <span className="text-xs text-gray-500">{message}</span>
+                                    <span className="text-xs text-gray-500">
+                                        {message}
+                                    </span>
                                 )}
                             </div>
                         </div>

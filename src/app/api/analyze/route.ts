@@ -6,7 +6,10 @@ import { consumeUsage } from '@/lib/counter';
 import { runPipeline } from '@/lib/pipeline';
 import type { PipelineEvent } from '@/lib/types';
 
-const schema = z.object({ videoUrl: z.string().url(), force: z.boolean().optional() });
+const schema = z.object({
+    videoUrl: z.string().url(),
+    force: z.boolean().optional(),
+});
 
 const ALLOWED_CHANNELS = [
     process.env.SHOOKAWORLD_CHANNEL_ID,

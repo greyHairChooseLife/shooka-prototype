@@ -2,7 +2,10 @@ import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import type { CaseMeta } from '@/lib/types';
 
-const youtube = google.youtube({ version: 'v3', auth: process.env.YOUTUBE_API_KEY });
+const youtube = google.youtube({
+    version: 'v3',
+    auth: process.env.YOUTUBE_API_KEY,
+});
 
 let cache: { data: CaseMeta[]; expiresAt: number } | null = null;
 const TTL_MS = 10 * 60 * 1000;

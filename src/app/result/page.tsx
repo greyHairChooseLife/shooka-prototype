@@ -44,9 +44,13 @@ export default function ResultPage() {
         <div className="mx-auto flex max-w-6xl gap-0 px-4 py-8">
             {/* 사이드바 — 분석 목록 */}
             <aside className="w-72 shrink-0 border-r border-gray-800 pr-4">
-                <h2 className="mb-4 text-sm font-semibold text-gray-400">분석된 영상</h2>
+                <h2 className="mb-4 text-sm font-semibold text-gray-400">
+                    분석된 영상
+                </h2>
                 {cases.length === 0 ? (
-                    <p className="text-xs text-gray-600">아직 분석 결과가 없습니다.</p>
+                    <p className="text-xs text-gray-600">
+                        아직 분석 결과가 없습니다.
+                    </p>
                 ) : (
                     <ul className="space-y-1">
                         {cases.map((c) => (
@@ -60,13 +64,21 @@ export default function ResultPage() {
                                             : 'text-gray-400 hover:bg-gray-800/60 hover:text-gray-200'
                                     }`}
                                 >
-                                    <p className="line-clamp-2 text-xs font-medium leading-snug">
+                                    <p className="line-clamp-2 text-xs leading-snug font-medium">
                                         {c.videoTitle}
                                     </p>
                                     <p className="mt-1 text-xs text-gray-600">
-                                        {c.channelName === 'shookaworld' ? '슈카월드' : '머니코믹스'}
+                                        {c.channelName === 'shookaworld'
+                                            ? '슈카월드'
+                                            : '머니코믹스'}
                                         {c.analyzedAt && (
-                                            <> · {new Date(c.analyzedAt).toLocaleDateString('ko-KR')}</>
+                                            <>
+                                                {' '}
+                                                ·{' '}
+                                                {new Date(
+                                                    c.analyzedAt,
+                                                ).toLocaleDateString('ko-KR')}
+                                            </>
                                         )}
                                     </p>
                                 </button>
@@ -88,7 +100,9 @@ export default function ResultPage() {
                 )}
                 {!loading && result && <AnalysisResultView result={result} />}
                 {!loading && !result && (
-                    <p className="text-sm text-gray-600">왼쪽 목록에서 영상을 선택하세요.</p>
+                    <p className="text-sm text-gray-600">
+                        왼쪽 목록에서 영상을 선택하세요.
+                    </p>
                 )}
             </main>
         </div>

@@ -13,12 +13,19 @@ export function buildActionsPrompt(
     channel: ChannelName,
     totalCommentCount: number,
 ): string {
-    const totalScore = categoryDistribution.reduce((s, c) => s + c.weightedScore, 0);
+    const totalScore = categoryDistribution.reduce(
+        (s, c) => s + c.weightedScore,
+        0,
+    );
 
     const distributionStr = categoryDistribution
         .map((f) => {
-            const label = CATEGORY_LABELS[f.category as AnalysisCategory] ?? f.category;
-            const pct = totalScore > 0 ? Math.round((f.weightedScore / totalScore) * 100) : 0;
+            const label =
+                CATEGORY_LABELS[f.category as AnalysisCategory] ?? f.category;
+            const pct =
+                totalScore > 0
+                    ? Math.round((f.weightedScore / totalScore) * 100)
+                    : 0;
             const commentsStr = f.sampleComments
                 .slice(0, 5)
                 .map((c, i) => `  [${i}] (좋아요 ${c.likeCount}) "${c.text}"`)

@@ -28,7 +28,11 @@ export default function CaseCards({ onEvents, onResult }: Props) {
                 {cases.map((c) => (
                     <button
                         key={c.videoId}
-                        onClick={() => analyze(`https://www.youtube.com/watch?v=${c.videoId}`)}
+                        onClick={() =>
+                            analyze(
+                                `https://www.youtube.com/watch?v=${c.videoId}`,
+                            )
+                        }
                         disabled={loading}
                         className="overflow-hidden rounded-lg bg-gray-800 text-left transition-colors hover:bg-gray-700 disabled:opacity-50"
                     >
@@ -39,11 +43,18 @@ export default function CaseCards({ onEvents, onResult }: Props) {
                         />
                         <div className="p-3">
                             <p className="mb-1 text-xs text-indigo-400">
-                                {c.channelName === 'shookaworld' ? '슈카월드' : '머니코믹스'}
+                                {c.channelName === 'shookaworld'
+                                    ? '슈카월드'
+                                    : '머니코믹스'}
                             </p>
-                            <p className="line-clamp-2 text-sm font-medium">{c.videoTitle}</p>
+                            <p className="line-clamp-2 text-sm font-medium">
+                                {c.videoTitle}
+                            </p>
                             <p className="mt-1 text-xs text-gray-500">
-                                분석: {new Date(c.analyzedAt).toLocaleDateString('ko-KR')}
+                                분석:{' '}
+                                {new Date(c.analyzedAt).toLocaleDateString(
+                                    'ko-KR',
+                                )}
                             </p>
                         </div>
                     </button>

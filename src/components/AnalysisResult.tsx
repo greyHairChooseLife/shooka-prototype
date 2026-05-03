@@ -4,7 +4,11 @@ import type { AnalysisResult } from '@/lib/types';
 import FeedbackChart from './FeedbackChart';
 import ActionCards from './ActionCards';
 
-export default function AnalysisResultView({ result }: { result: AnalysisResult }) {
+export default function AnalysisResultView({
+    result,
+}: {
+    result: AnalysisResult;
+}) {
     const router = useRouter();
 
     function handleReanalyze() {
@@ -32,13 +36,20 @@ export default function AnalysisResultView({ result }: { result: AnalysisResult 
                         {result.videoTitle}(보러가기)
                     </a>
                     <p className="mt-1 text-sm text-gray-400">
-                        {result.channelName === 'shookaworld' ? '슈카월드' : '머니코믹스'}
+                        {result.channelName === 'shookaworld'
+                            ? '슈카월드'
+                            : '머니코믹스'}
                         {' · '}
-                        {new Date(result.publishedAt).toLocaleDateString('ko-KR')}
+                        {new Date(result.publishedAt).toLocaleDateString(
+                            'ko-KR',
+                        )}
                     </p>
-                    <p className="text-sm text-gray-400">댓글 {result.commentCount}개 분석</p>
+                    <p className="text-sm text-gray-400">
+                        댓글 {result.commentCount}개 분석
+                    </p>
                     <p className="mt-1 text-xs text-gray-600">
-                        분석 시각: {new Date(result.analyzedAt).toLocaleString('ko-KR')}
+                        분석 시각:{' '}
+                        {new Date(result.analyzedAt).toLocaleString('ko-KR')}
                     </p>
                     <button
                         onClick={handleReanalyze}
@@ -51,8 +62,12 @@ export default function AnalysisResultView({ result }: { result: AnalysisResult 
 
             {result.videoSummary && (
                 <div className="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
-                    <p className="mb-1 text-xs font-medium text-gray-400">영상 요약</p>
-                    <p className="text-sm leading-relaxed text-gray-300">{result.videoSummary}</p>
+                    <p className="mb-1 text-xs font-medium text-gray-400">
+                        영상 요약
+                    </p>
+                    <p className="text-sm leading-relaxed text-gray-300">
+                        {result.videoSummary}
+                    </p>
                 </div>
             )}
 

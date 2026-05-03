@@ -12,18 +12,18 @@ npm run dev
 
 ## 환경변수
 
-| 변수 | 설명 |
-|------|------|
-| `YOUTUBE_API_KEY` | YouTube Data API v3 키 |
-| `AI_PROVIDER` | `openai` (기본값) \| `anthropic` \| `gemini` |
-| `OPENAI_API_KEY` | OpenAI API 키 |
-| `ANTHROPIC_API_KEY` | Anthropic API 키 |
-| `GEMINI_API_KEY` | Google Gemini API 키 |
-| `SHOOKAWORLD_CHANNEL_ID` | 슈카월드 채널 ID |
-| `MONEYCOMICS_CHANNEL_ID` | 머니코믹스 채널 ID |
-| `USAGE_LIMIT_PER_DAY` | 24시간 분석 횟수 제한 (기본값: 15) |
-| `DB_PATH` | SQLite DB 경로 (기본값: `./data/app.db`) |
-| `DOMAIN` | 운영 도메인 — 설정 시 Caddy가 HTTPS 자동 발급, 없으면 HTTP only |
+| 변수                     | 설명                                                            |
+| ------------------------ | --------------------------------------------------------------- |
+| `YOUTUBE_API_KEY`        | YouTube Data API v3 키                                          |
+| `AI_PROVIDER`            | `openai` (기본값) \| `anthropic` \| `gemini`                    |
+| `OPENAI_API_KEY`         | OpenAI API 키                                                   |
+| `ANTHROPIC_API_KEY`      | Anthropic API 키                                                |
+| `GEMINI_API_KEY`         | Google Gemini API 키                                            |
+| `SHOOKAWORLD_CHANNEL_ID` | 슈카월드 채널 ID                                                |
+| `MONEYCOMICS_CHANNEL_ID` | 머니코믹스 채널 ID                                              |
+| `USAGE_LIMIT_PER_DAY`    | 24시간 분석 횟수 제한 (기본값: 15)                              |
+| `DB_PATH`                | SQLite DB 경로 (기본값: `./data/app.db`)                        |
+| `DOMAIN`                 | 운영 도메인 — 설정 시 Caddy가 HTTPS 자동 발급, 없으면 HTTP only |
 
 ## 서버 초기 세팅 (최초 1회)
 
