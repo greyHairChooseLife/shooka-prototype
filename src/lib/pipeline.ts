@@ -146,6 +146,7 @@ export async function runPipeline(
             videoSummary,
             significantCategories,
             channelName,
+            comments.length,
         ),
     );
 
