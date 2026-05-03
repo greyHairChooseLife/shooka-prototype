@@ -10,24 +10,11 @@ const STAGES = [
     { key: 'generating-actions', label: '액션 아이템 생성' },
 ] as const;
 
-export default function ProgressStream({
-    events,
-}: {
-    events: PipelineEvent[];
-}) {
+export default function ProgressStream({ events }: { events: PipelineEvent[] }) {
     if (!events.length) return null;
 
     const lastEvent = events[events.length - 1];
-    const isDone = lastEvent.stage === 'done';
     const isError = lastEvent.stage === 'error';
-
-    const completedStages = new Set(
-        events
-            .filter((e) => e.stage !== 'done' && e.stage !== 'error')
-            .map((e) => e.stage),
-    );
-
-    const activeStage = !isDone && !isError ? lastEvent.stage : null;
 
     if (isError) {
         return (
@@ -38,62 +25,71 @@ export default function ProgressStream({
         );
     }
 
-    return (
-        <div className="space-y-2">
-            {STAGES.map((stage) => {
-                const isComplete = completedStages.has(stage.key);
-                const isActive = activeStage === stage.key;
-                const isPending = !isComplete && !isActive && !isDone;
+    const activeStage = lastEvent.stage !== 'done' ? lastEvent.stage : null;
 
-                const matchingEvent = events.find((e) => e.stage === stage.key);
-                const message =
-                    matchingEvent && 'message' in matchingEvent
-                        ? matchingEvent.message
-                        : null;
+    // 각 stage의 마지막 이벤트를 사용 (완료 메시지가 "중..." 메시지를 덮어씀)
+    const lastEventByStage = new Map<string, string>();
+    for (const e of events) {
+        if (e.stage !== 'done' && e.stage !== 'error' && 'message' in e) {
+            lastEventByStage.set(e.stage, e.message);
+        }
+    }
+
+    // 현재 활성 stage 이전의 모든 stage는 완료
+    const activeIndex = STAGES.findIndex((s) => s.key === activeStage);
+    const isComplete = (key: string) => {
+        const idx = STAGES.findIndex((s) => s.key === key);
+        return activeStage === null || idx < activeIndex;
+    };
+
+    return (
+        <div className="space-y-3">
+            {STAGES.map((stage) => {
+                const complete = isComplete(stage.key);
+                const active = activeStage === stage.key;
+                const pending = !complete && !active;
+                const message = lastEventByStage.get(stage.key) ?? null;
 
                 return (
                     <div
                         key={stage.key}
                         className={`flex items-start gap-3 text-sm transition-opacity ${
-                            isPending ? 'opacity-30' : 'opacity-100'
+                            pending ? 'opacity-25' : 'opacity-100'
                         }`}
                     >
+                        {/* 아이콘 */}
                         <span className="mt-0.5 w-5 shrink-0 text-center">
-                            {isDone || isComplete ? (
+                            {complete ? (
                                 <span className="text-green-400">✓</span>
-                            ) : isActive ? (
+                            ) : active ? (
                                 <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
                             ) : (
                                 <span className="text-gray-600">·</span>
                             )}
                         </span>
-                        <div className="min-w-0">
-                            <span
-                                className={
-                                    isDone || isComplete
-                                        ? 'text-gray-300'
-                                        : isActive
-                                          ? 'font-medium text-white'
-                                          : 'text-gray-500'
-                                }
-                            >
-                                {stage.label}
-                            </span>
-                            {message && (
-                                <p className="mt-0.5 truncate text-xs text-gray-500">
-                                    {message}
-                                </p>
-                            )}
+
+                        {/* 레이블 + 메시지 */}
+                        <div className="min-w-0 flex-1">
+                            <div className="flex items-baseline gap-2">
+                                <span
+                                    className={
+                                        complete
+                                            ? 'text-gray-300'
+                                            : active
+                                              ? 'font-medium text-white'
+                                              : 'text-gray-500'
+                                    }
+                                >
+                                    {stage.label}
+                                </span>
+                                {message && (
+                                    <span className="text-xs text-gray-500">{message}</span>
+                                )}
+                            </div>
                         </div>
                     </div>
                 );
             })}
-
-            {isDone && (
-                <div className="mt-3 border-t border-gray-700 pt-3 text-xs text-gray-500">
-                    분석 완료
-                </div>
-            )}
         </div>
     );
 }

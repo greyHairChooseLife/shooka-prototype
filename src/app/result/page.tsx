@@ -14,6 +14,18 @@ export default function ResultPage() {
         setEvents([]);
     });
 
+    // 마지막 분석 결과를 localStorage에서 초기 로드
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem('lastAnalysisResult');
+            if (raw) {
+                const r = JSON.parse(raw) as AnalysisResult;
+                setResult(r);
+                setSelectedId(r.videoId);
+            }
+        } catch {}
+    }, []);
+
     useEffect(() => {
         fetch('/api/cases')
             .then((r) => r.json())
@@ -67,16 +79,16 @@ export default function ResultPage() {
             {/* 메인 — 분석 결과 */}
             <main className="min-w-0 flex-1 pl-8">
                 {loading && (
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                        <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
-                        불러오는 중...
+                    <div className="flex flex-col gap-4">
+                        <div className="flex items-center gap-2 text-sm text-gray-400">
+                            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-blue-400 border-t-transparent" />
+                            분석 결과 불러오는 중...
+                        </div>
                     </div>
                 )}
                 {!loading && result && <AnalysisResultView result={result} />}
                 {!loading && !result && (
-                    <p className="text-sm text-gray-600">
-                        왼쪽 목록에서 영상을 선택하세요.
-                    </p>
+                    <p className="text-sm text-gray-600">왼쪽 목록에서 영상을 선택하세요.</p>
                 )}
             </main>
         </div>

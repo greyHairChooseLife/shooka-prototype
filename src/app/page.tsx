@@ -1,29 +1,21 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Landing from '@/components/Landing';
 import ProgressStream from '@/components/ProgressStream';
-import AnalysisResultView from '@/components/AnalysisResult';
 import RecentVideos from '@/components/RecentVideos';
 import Footer from '@/components/Footer';
 import type { PipelineEvent, AnalysisResult } from '@/lib/types';
 
 export default function Page() {
     const [events, setEvents] = useState<PipelineEvent[]>([]);
-    const [result, setResult] = useState<AnalysisResult | null>(null);
-    const resultRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
 
     function handleResult(r: AnalysisResult) {
-        setResult(r);
-        setEvents((prev) =>
-            prev.length === 0 ? [{ stage: 'done', result: r }] : prev,
-        );
         try {
             localStorage.setItem('lastAnalysisResult', JSON.stringify(r));
         } catch {}
-        setTimeout(
-            () => resultRef.current?.scrollIntoView({ behavior: 'smooth' }),
-            100,
-        );
+        router.push('/result');
     }
 
     return (
@@ -31,9 +23,8 @@ export default function Page() {
             <Landing onEvents={setEvents} onResult={handleResult} />
 
             {events.length > 0 && (
-                <div ref={resultRef} className="space-y-8">
+                <div className="space-y-8">
                     <ProgressStream events={events} />
-                    {result && <AnalysisResultView result={result} />}
                 </div>
             )}
 
