@@ -1,6 +1,6 @@
 services:
     app:
-        build: .
+        image: shooka-prototype
         restart: unless-stopped
         env_file: .env
         volumes:
