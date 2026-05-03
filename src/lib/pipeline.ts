@@ -93,9 +93,9 @@ export async function runPipeline(
             : 'moneycomics';
 
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 중...' });
-    const actionItems = await callLLMJSON<ActionItem[]>(
+    const actionItems = (await callLLMJSON<ActionItem[]>(
         buildActionsPrompt(meta.title, videoSummary, categoryDistribution, channelName),
-    );
+    )).sort((a, b) => (b.impactScore ?? 0) - (a.impactScore ?? 0));
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
 
     const result: AnalysisResult = {

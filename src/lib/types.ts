@@ -15,6 +15,13 @@ export const ANALYSIS_CATEGORIES = [
 
 export type AnalysisCategory = (typeof ANALYSIS_CATEGORIES)[number];
 
+export const CATEGORY_LABELS: Record<AnalysisCategory, string> = {
+    'Topic Value': '주제 만족도',
+    'Expertise & Correction': '전문성·정정',
+    'Future Demand': '콘텐츠 요청',
+    'Viewer Identity': '시청자 공감',
+};
+
 export type FeedbackCategory = {
     category: string;
     weightedScore: number;
@@ -26,6 +33,7 @@ export type ActionItem = {
     title: string;
     rationale: string;
     sourceCategory: AnalysisCategory;
+    impactScore: number;
 };
 
 export type AnalysisResult = {

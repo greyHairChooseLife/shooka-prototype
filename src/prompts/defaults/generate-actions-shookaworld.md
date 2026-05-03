@@ -80,7 +80,10 @@
     {
         "title": "액션 제안 (1~2문장)",
         "rationale": "어떤 댓글 패턴에 근거한 제안인지 논리적으로 설명",
-        "sourceCategory": "Topic Value"
+        "sourceCategory": "Topic Value",
+        "impactScore": 85
     }
 ]
 ```
+
+impactScore는 1~100 사이 정수. 이 액션이 채널 성장에 미칠 영향력을 추정한 점수.

@@ -17,6 +17,9 @@ export default function Page() {
         setEvents((prev) =>
             prev.length === 0 ? [{ stage: 'done', result: r }] : prev,
         );
+        try {
+            localStorage.setItem('lastAnalysisResult', JSON.stringify(r));
+        } catch {}
         setTimeout(
             () => resultRef.current?.scrollIntoView({ behavior: 'smooth' }),
             100,

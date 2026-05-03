@@ -16,17 +16,20 @@ export default function AnalysisResultView({
                     className="w-40 rounded-lg"
                 />
                 <div>
-                    <h2 className="text-lg font-semibold">
+                    <a
+                        href={result.videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-lg font-semibold hover:underline"
+                    >
                         {result.videoTitle}
-                    </h2>
+                    </a>
                     <p className="mt-1 text-sm text-gray-400">
                         {result.channelName === 'shookaworld'
                             ? '슈카월드'
                             : '머니코믹스'}{' '}
                         ·{' '}
-                        {new Date(result.publishedAt).toLocaleDateString(
-                            'ko-KR',
-                        )}
+                        {new Date(result.publishedAt).toLocaleDateString('ko-KR')}
                     </p>
                     <p className="text-sm text-gray-400">
                         댓글 {result.commentCount}개 분석
@@ -39,7 +42,10 @@ export default function AnalysisResultView({
             </div>
 
             <FeedbackChart data={result.categoryDistribution} />
-            <ActionCards items={result.actionItems} />
+            <ActionCards
+                items={result.actionItems}
+                categoryDistribution={result.categoryDistribution}
+            />
         </div>
     );
 }
