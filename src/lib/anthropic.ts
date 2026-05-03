@@ -1,9 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const model = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
-
 export async function callClaude(prompt: string): Promise<string> {
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const model = process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001';
     const msg = await client.messages.create({
         model,
         max_tokens: 4096,
