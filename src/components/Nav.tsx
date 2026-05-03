@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const LINKS = [
+    { href: '/about', label: '소개' },
     { href: '/', label: '분석' },
     { href: '/result', label: '결과 보기' },
-    { href: '/about', label: '소개' },
     { href: '/prompts', label: '프롬프트' },
 ];
 
