@@ -6,6 +6,12 @@ export type CommentClassification = {
     category: string | null;
 };
 
+// LLM은 1~4 숫자로 응답 — 서버에서 카테고리 이름으로 매핑
+type RawClassification = {
+    index: number;
+    category: number | null;
+};
+
 export function buildClassifyPrompt(
     comments: RawComment[],
     videoSummary: string,
@@ -39,8 +45,8 @@ ${categoriesStr}
 1. 댓글 내용이 영상 주제와 실질적 연관이 있는가?
    - 있다면 → 표현이 유머적이더라도 해당 카테고리로 분류
    - 없다면 → 아래 제외 기준 적용
-2. 반어/자조적 표현("나 망했다 ㅋㅋ", "역시 난 안 돼")이라도 영상 주제에 자신의 상황을 대입한 것이라면 → Viewer Identity
-3. 유머로 포장됐지만 실질적 오류 지적이나 요청이 담겨 있다면 → 해당 카테고리로 분류
+2. 반어/자조적 표현("나 망했다 ㅋㅋ", "역시 난 안 돼")이라도 영상 주제에 자신의 상황을 대입한 것이라면 → 4
+3. 유머로 포장됐지만 실질적 오류 지적이나 요청이 담겨 있다면 → 해당 카테고리 번호로 분류
 4. 영상 내용과 무관한 순수 밈/농담 ("ㄷㄷ 실화냐", "ㄹㅇ임?") → null
 
 ## 제외 기준 (null 처리)
@@ -52,10 +58,20 @@ ${categoriesStr}
 ${commentsStr}
 
 ## 지시사항
-- 각 댓글을 위 카테고리 중 하나로 분류하거나, 제외 기준에 해당하면 null
+- 각 댓글을 카테고리 번호(1~4)로 분류하거나, 제외 기준에 해당하면 null
 - JSON 배열로만 응답 (다른 텍스트 없이)
 
 \`\`\`json
-[{"index": 0, "category": "Topic Value"}, {"index": 1, "category": null}, ...]
+[{"index": 0, "category": 1}, {"index": 1, "category": null}, ...]
 \`\`\``;
+}
+
+export function parseClassifications(raw: RawClassification[]): CommentClassification[] {
+    return raw.map((r) => ({
+        index: r.index,
+        category:
+            r.category !== null && r.category >= 1 && r.category <= ANALYSIS_CATEGORIES.length
+                ? ANALYSIS_CATEGORIES[r.category - 1]
+                : null,
+    }));
 }

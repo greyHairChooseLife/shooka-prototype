@@ -8,6 +8,7 @@ import { callLLM, callLLMJSON } from '@/lib/llm';
 import { buildSummarizePrompt } from '@/prompts/summarize-video';
 import {
     buildClassifyPrompt,
+    parseClassifications,
     type CommentClassification,
 } from '@/prompts/classify-feedback';
 import { buildActionsPrompt } from '@/prompts/generate-actions';
@@ -112,9 +113,10 @@ export async function runPipeline(
     onEvent({ stage: 'summarizing', message: '영상 요약 완료' });
 
     onEvent({ stage: 'classifying-feedback', message: '댓글 분류 중...' });
-    const classifications = await callLLMJSON<CommentClassification[]>(
+    const rawClassifications = await callLLMJSON<{ index: number; category: number | null }[]>(
         buildClassifyPrompt(comments, videoSummary),
     );
+    const classifications = parseClassifications(rawClassifications);
     onEvent({ stage: 'classifying-feedback', message: '댓글 분류 완료' });
 
     onEvent({ stage: 'aggregating', message: '결과 집계 중...' });
@@ -146,10 +148,17 @@ export async function runPipeline(
         ),
     );
 
-    // categoryIndex 오름차순 정렬 — [0]이 가장 높은 점유율 카테고리
-    const actionItems = [...rawActionItems].sort(
-        (a, b) => (a.categoryIndex ?? 0) - (b.categoryIndex ?? 0),
+    // 카테고리별 가중치 점수 맵 생성
+    const scoreMap = new Map(
+        categoryDistribution.map((c) => [c.category, c.weightedScore]),
     );
+
+    // LLM 응답을 카테고리 가중치 점수 내림차순으로 정렬
+    const actionItems = [...rawActionItems].sort((a, b) => {
+        const scoreA = scoreMap.get(a.sourceCategory) ?? 0;
+        const scoreB = scoreMap.get(b.sourceCategory) ?? 0;
+        return scoreB - scoreA;
+    });
     onEvent({ stage: 'generating-actions', message: '액션 아이템 생성 완료' });
 
     const result: AnalysisResult = {

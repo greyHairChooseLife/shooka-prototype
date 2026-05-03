@@ -45,8 +45,8 @@ export async function getVideoMeta(videoId: string): Promise<VideoMeta> {
     if (!item) throw new Error(`Video not found: ${videoId}`);
 
     const snippet = item.snippet!;
-    if (snippet.liveBroadcastContent === 'live') {
-        throw new Error('라이브 방송 중인 영상은 분석할 수 없습니다.');
+    if (snippet.liveBroadcastContent === 'live' || snippet.liveBroadcastContent === 'upcoming') {
+        throw new Error('라이브 방송 중이거나 예정된 영상은 분석할 수 없습니다.');
     }
 
     return {
@@ -60,6 +60,19 @@ export async function getVideoMeta(videoId: string): Promise<VideoMeta> {
             snippet.thumbnails?.default?.url ||
             '',
     };
+}
+
+function decodeYouTubeText(html: string): string {
+    return html
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<a[^>]*>(.*?)<\/a>/gi, '$1')
+        .replace(/<[^>]+>/g, '')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&nbsp;/g, ' ');
 }
 
 export async function fetchComments(videoId: string): Promise<RawComment[]> {
@@ -80,7 +93,7 @@ export async function fetchComments(videoId: string): Promise<RawComment[]> {
             const top = item.snippet?.topLevelComment?.snippet;
             if (!top) continue;
             allComments.push({
-                text: top.textDisplay || '',
+                text: decodeYouTubeText(top.textDisplay || ''),
                 likeCount: top.likeCount || 0,
                 author: top.authorDisplayName || '',
                 publishedAt: top.publishedAt || '',
